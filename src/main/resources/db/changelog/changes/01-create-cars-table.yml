@@ -30,7 +30,7 @@ databaseChangeLog:
                   name: inventory
                   type: int
               - column:
-                  name: fee
+                  name: daily_fee
                   type: decimal
               - column:
                   name: is_deleted
