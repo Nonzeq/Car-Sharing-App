@@ -1,6 +1,6 @@
 package com.kobylchak.carsharing.controller;
 
-import com.kobylchak.carsharing.dto.CarDto;
+import com.kobylchak.carsharing.dto.car.CarDto;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;

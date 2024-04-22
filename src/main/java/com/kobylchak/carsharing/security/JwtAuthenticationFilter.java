@@ -5,7 +5,6 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import liquibase.util.StringUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -29,7 +28,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             HttpServletRequest request,
             HttpServletResponse response,
             FilterChain filterChain) throws ServletException, IOException {
-
         String token = getTokenFromRequest(request);
         if (token != null && jwtUtil.isValidToken(token)) {
             String userName = jwtUtil.getUserName(token);
@@ -46,9 +44,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private String getTokenFromRequest(HttpServletRequest request) {
         String auth = request.getHeader(AUTHORIZATION);
-        auth = auth.trim();
         if (StringUtils.hasText(auth) && auth.startsWith(BEARER)) {
-            return auth.substring(BEARER.length());
+            return auth.trim().substring(BEARER.length());
         }
         return null;
     }

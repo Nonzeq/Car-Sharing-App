@@ -1,4 +1,4 @@
-package com.kobylchak.carsharing.dto;
+package com.kobylchak.carsharing.dto.car;
 
 import lombok.Data;
 
