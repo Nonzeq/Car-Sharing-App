@@ -5,6 +5,7 @@ import com.kobylchak.carsharing.dto.user.UserLoginResponseDto;
 import com.kobylchak.carsharing.dto.user.UserRegistrationRequestDto;
 import com.kobylchak.carsharing.dto.user.UserResponseDto;
 import com.kobylchak.carsharing.service.auth.AuthenticationService;
+import com.kobylchak.carsharing.service.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class UserController {
     private final AuthenticationService authenticationService;
+    private final UserService userService;
     
     @PostMapping("/login")
     @ResponseStatus(HttpStatus.OK)
@@ -29,7 +31,7 @@ public class UserController {
     @ResponseStatus(HttpStatus.CREATED)
     public UserResponseDto register(
             @RequestBody UserRegistrationRequestDto requestDto) {
-        
+        return userService.registerUser(requestDto);
     }
 
 }
