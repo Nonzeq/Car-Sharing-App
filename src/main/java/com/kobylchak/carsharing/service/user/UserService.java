@@ -1,6 +1,7 @@
 package com.kobylchak.carsharing.service.user;
 
 import com.kobylchak.carsharing.dto.role.UpdateRoleRequestDto;
+import com.kobylchak.carsharing.dto.user.UpdateUserInfoRequestDto;
 import com.kobylchak.carsharing.dto.user.UserInfoDto;
 import com.kobylchak.carsharing.dto.user.UserRegistrationRequestDto;
 import com.kobylchak.carsharing.dto.user.UserResponseDto;
@@ -16,4 +17,5 @@ public interface UserService {
     
     UserInfoDto getUserInfo(User user);
     
+    UserInfoDto updateUserInfo(User user, UpdateUserInfoRequestDto requestDto);
 }

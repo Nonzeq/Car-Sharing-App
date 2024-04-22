@@ -1,6 +1,7 @@
 package com.kobylchak.carsharing.service.user;
 
 import com.kobylchak.carsharing.dto.role.UpdateRoleRequestDto;
+import com.kobylchak.carsharing.dto.user.UpdateUserInfoRequestDto;
 import com.kobylchak.carsharing.dto.user.UserInfoDto;
 import com.kobylchak.carsharing.dto.user.UserRegistrationRequestDto;
 import com.kobylchak.carsharing.dto.user.UserResponseDto;
@@ -12,7 +13,6 @@ import com.kobylchak.carsharing.model.User;
 import com.kobylchak.carsharing.repository.role.RoleRepository;
 import com.kobylchak.carsharing.repository.user.UserReposiotry;
 import jakarta.persistence.EntityNotFoundException;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -58,6 +58,17 @@ public class UserServiceImpl implements UserService {
     
     @Override
     public UserInfoDto getUserInfo(User user) {
-        return userMapper.toinfoDto(user);
+        return userMapper.toInfoDto(user);
+    }
+    
+    @Override
+    public UserInfoDto updateUserInfo(User user, UpdateUserInfoRequestDto requestDto) {
+        if (requestDto.getFirstName() != null) {
+            user.setFirstName(requestDto.getFirstName());
+        }
+        if (requestDto.getLastName() != null) {
+            user.setLastName(requestDto.getLastName());
+        }
+        return userMapper.toInfoDto(userReposiotry.save(user));
     }
 }

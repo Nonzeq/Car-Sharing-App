@@ -15,9 +15,10 @@ import org.mapstruct.MappingTarget;
 @Mapper(config = MapperConfig.class)
 public interface UserMapper {
     @Mapping(target = "password", ignore = true)
-    User toModel(UserRegistrationRequestDto requestDto,
-                 @Context String hashedPassword,
-                 @Context Role defaultRole);
+    User toModel(
+            UserRegistrationRequestDto requestDto,
+            @Context String hashedPassword,
+            @Context Role defaultRole);
     
     @AfterMapping
     default void setHashedPassword(@MappingTarget User user, @Context String hashedPassword) {
@@ -30,5 +31,7 @@ public interface UserMapper {
     }
     
     UserResponseDto toDto(User user);
-    UserInfoDto toinfoDto(User user);
+    
+    UserInfoDto toInfoDto(User user);
+    
 }
