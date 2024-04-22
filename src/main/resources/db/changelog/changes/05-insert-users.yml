@@ -1,0 +1,35 @@
+databaseChangeLog:
+  - changeSet:
+      id: insert-users
+      author: bohdan
+      changes:
+        - insert:
+            tableName: users
+            columns:
+              - column:
+                  name: email
+                  value: admin@gmail.com
+              - column:
+                  name: password
+                  value: $2a$12$HohAGd75LDngYpnZQhVyMeex68fk6wf0lpU/HnMH2DYgNW5xUBOAe
+              - column:
+                  name: first_name
+                  value: admin
+              - column:
+                  name: last_name
+                  value: admin
+        - insert:
+            tableName: users
+            columns:
+              - column:
+                  name: email
+                  value: user@gmail.com
+              - column:
+                  name: password
+                  value: $2a$12$16r5H4/7toQI1Mhi6Z/SmuGkmmQXmu8jXBx9iUsOBuvdeuLOvWALW
+              - column:
+                  name: first_name
+                  value: user
+              - column:
+                  name: last_name
+                  value: user
