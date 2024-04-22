@@ -9,11 +9,15 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
+import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 @Entity
 @Table(name = "users")
@@ -21,7 +25,7 @@ import org.hibernate.annotations.SQLRestriction;
 @Setter
 @SQLRestriction("is_deleted=FALSE")
 @SQLDelete(sql = "UPDATE users set is_deleted = true WHERE id=?")
-public class User {
+public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -49,5 +53,38 @@ public class User {
     @Column(nullable = false, name = "is_deleted")
     private boolean isDeleted;
 
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return this.role;
+    }
 
+    @Override
+    public String getPassword() {
+        return this.password;
+    }
+
+    @Override
+    public String getUsername() {
+        return this.email;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return !isDeleted;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return !isDeleted;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return !isDeleted;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return !isDeleted;
+    }
 }
