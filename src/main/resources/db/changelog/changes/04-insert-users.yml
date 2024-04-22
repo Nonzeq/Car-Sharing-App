@@ -18,6 +18,9 @@ databaseChangeLog:
               - column:
                   name: last_name
                   value: admin
+              - column:
+                  name: role_id
+                  value: 1
         - insert:
             tableName: users
             columns:
@@ -33,3 +36,6 @@ databaseChangeLog:
               - column:
                   name: last_name
                   value: user
+              - column:
+                  name: role_id
+                  value: 2
