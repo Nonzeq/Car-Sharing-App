@@ -8,5 +8,10 @@ services:
     environment:
       - MYSQL_ROOT_PASSWORD=$MYSQLDB_ROOT_PASSWORD
       - MYSQL_DATABASE=$MYSQLDB_DATABASE
+    healthcheck:
+      test: [ "CMD", "mysqladmin" ,"ping", "-h", "localhost" ]
+      timeout: 40s
+      interval: 40s
+      retries: 10
     ports:
       - $MYSQLDB_LOCAL_PORT:$MYSQLDB_DOCKER_PORT
