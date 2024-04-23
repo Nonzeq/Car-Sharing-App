@@ -2,9 +2,10 @@ package com.kobylchak.carsharing.controller;
 
 import com.kobylchak.carsharing.dto.role.UpdateRoleRequestDto;
 import com.kobylchak.carsharing.dto.user.UpdateUserInfoRequestDto;
-import com.kobylchak.carsharing.dto.user.UserInfoDto;
+import com.kobylchak.carsharing.dto.user.UserResponseDto;
 import com.kobylchak.carsharing.model.User;
 import com.kobylchak.carsharing.service.user.UserService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -30,15 +31,15 @@ public class UserController {
     
     @GetMapping("/me")
     @PreAuthorize("hasAnyRole('MANAGER', 'CUSTOMER')")
-    public UserInfoDto getCurrentUserInfo(Authentication authentication) {
+    public UserResponseDto getCurrentUserInfo(Authentication authentication) {
         User user = (User) authentication.getPrincipal();
         return userService.getUserInfo(user);
     }
     
     @PutMapping("/me")
     @PreAuthorize("hasAnyRole('MANAGER', 'CUSTOMER')")
-    public UserInfoDto updateUserInfo(Authentication authentication,
-                                      @RequestBody UpdateUserInfoRequestDto requestDto) {
+    public UserResponseDto updateUserInfo(Authentication authentication,
+                                      @RequestBody @Valid UpdateUserInfoRequestDto requestDto) {
         User user = (User) authentication.getPrincipal();
         return userService.updateUserInfo(user, requestDto);
     }

@@ -2,7 +2,6 @@ package com.kobylchak.carsharing.service.user;
 
 import com.kobylchak.carsharing.dto.role.UpdateRoleRequestDto;
 import com.kobylchak.carsharing.dto.user.UpdateUserInfoRequestDto;
-import com.kobylchak.carsharing.dto.user.UserInfoDto;
 import com.kobylchak.carsharing.dto.user.UserRegistrationRequestDto;
 import com.kobylchak.carsharing.dto.user.UserResponseDto;
 import com.kobylchak.carsharing.exception.RoleNotValidException;
@@ -15,7 +14,7 @@ public interface UserService {
     
     void updateUserRole(Long userId, UpdateRoleRequestDto requestDto) throws RoleNotValidException;
     
-    UserInfoDto getUserInfo(User user);
+    UserResponseDto getUserInfo(User user);
     
-    UserInfoDto updateUserInfo(User user, UpdateUserInfoRequestDto requestDto);
+    UserResponseDto updateUserInfo(User user, UpdateUserInfoRequestDto requestDto);
 }

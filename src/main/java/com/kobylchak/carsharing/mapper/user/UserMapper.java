@@ -1,7 +1,6 @@
 package com.kobylchak.carsharing.mapper.user;
 
 import com.kobylchak.carsharing.config.MapperConfig;
-import com.kobylchak.carsharing.dto.user.UserInfoDto;
 import com.kobylchak.carsharing.dto.user.UserRegistrationRequestDto;
 import com.kobylchak.carsharing.dto.user.UserResponseDto;
 import com.kobylchak.carsharing.model.Role;
@@ -31,7 +30,5 @@ public interface UserMapper {
     }
     
     UserResponseDto toDto(User user);
-    
-    UserInfoDto toInfoDto(User user);
     
 }
