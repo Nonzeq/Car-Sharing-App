@@ -4,8 +4,7 @@ import java.math.BigDecimal;
 import lombok.Data;
 
 @Data
-public class CarDto {
-    private Long id;
+public class CreateCarRequestDto {
     private String model;
     private String brand;
     private String type;
