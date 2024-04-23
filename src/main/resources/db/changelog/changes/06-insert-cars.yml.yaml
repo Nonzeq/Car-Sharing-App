@@ -1,0 +1,95 @@
+databaseChangeLog:
+  - changeSet:
+      id: insert-cars
+      author: bohdan
+      changes:
+        - insert:
+            tableName: cars
+            columns:
+              - column:
+                  name: model
+                  value: R8 GT
+              - column:
+                  name: brand
+                  value: AUDI
+              - column:
+                  name: type
+                  value: SUV
+              - column:
+                  name: inventory
+                  value: 5
+              - column:
+                  name: daily_fee
+                  value: 45
+        - insert:
+            tableName: cars
+            columns:
+              - column:
+                  name: model
+                  value: i10
+              - column:
+                  name: brand
+                  value: HYUNDAI
+              - column:
+                  name: type
+                  value: HATCHBACK
+              - column:
+                  name: inventory
+                  value: 5
+              - column:
+                  name: daily_fee
+                  value: 25
+        - insert:
+            tableName: cars
+            columns:
+              - column:
+                  name: model
+                  value: Lancer
+              - column:
+                  name: brand
+                  value: MITSUBISHI
+              - column:
+                  name: type
+                  value: HATCHBACK
+              - column:
+                  name: inventory
+                  value: 5
+              - column:
+                  name: daily_fee
+                  value: 30
+        - insert:
+            tableName: cars
+            columns:
+              - column:
+                  name: model
+                  value: Astra
+              - column:
+                  name: brand
+                  value: OPEL
+              - column:
+                  name: type
+                  value: HATCHBACK
+              - column:
+                  name: inventory
+                  value: 5
+              - column:
+                  name: daily_fee
+                  value: 20
+        - insert:
+            tableName: cars
+            columns:
+              - column:
+                  name: model
+                  value: Corolla
+              - column:
+                  name: brand
+                  value: TOYOTA
+              - column:
+                  name: type
+                  value: SEDAN
+              - column:
+                  name: inventory
+                  value: 5
+              - column:
+                  name: daily_fee
+                  value: 35
