@@ -3,6 +3,7 @@ package com.kobylchak.carsharing.controller;
 import com.kobylchak.carsharing.dto.car.CarDto;
 import com.kobylchak.carsharing.dto.car.CreateCarRequestDto;
 import com.kobylchak.carsharing.service.car.CarService;
+import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -28,7 +29,7 @@ public class CarController {
     
     @PostMapping
     @PreAuthorize("hasRole('MANAGER')")
-    public CarDto createCar(@RequestBody CreateCarRequestDto requestDto) {
+    public CarDto createCar(@RequestBody @Valid CreateCarRequestDto requestDto) {
         return carService.createCar(requestDto);
     }
     
@@ -40,7 +41,8 @@ public class CarController {
     
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('MANAGER')")
-    public CarDto updateCar(@PathVariable Long id, @RequestBody CreateCarRequestDto requestDto) {
+    public CarDto updateCar(@PathVariable Long id,
+                            @RequestBody @Valid CreateCarRequestDto requestDto) {
         return carService.updateCar(id, requestDto);
     }
     
