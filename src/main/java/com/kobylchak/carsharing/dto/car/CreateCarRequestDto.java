@@ -1,6 +1,7 @@
 package com.kobylchak.carsharing.dto.car;
 
-import com.kobylchak.carsharing.validation.car.CarType;
+import com.kobylchak.carsharing.model.enums.CarType;
+import com.kobylchak.carsharing.validation.car.EnumType;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
@@ -14,7 +15,7 @@ public class CreateCarRequestDto {
     @NotBlank
     private String brand;
     @NotBlank
-    @CarType
+    @EnumType(type = CarType.class)
     private String type;
     @PositiveOrZero
     private int inventory;

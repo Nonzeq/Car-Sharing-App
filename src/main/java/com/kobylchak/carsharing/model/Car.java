@@ -1,5 +1,6 @@
 package com.kobylchak.carsharing.model;
 
+import com.kobylchak.carsharing.model.enums.CarType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -24,29 +25,23 @@ public class Car {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
+    
     @Column(nullable = false)
     private String model;
-
+    
     @Column(nullable = false)
     private String brand;
-
+    
     @Enumerated(EnumType.STRING)
     @Column(columnDefinition = "varchar")
     private CarType type;
-
+    
     private int inventory;
-
+    
     @Column(name = "daily_fee")
     private BigDecimal dailyFee;
-
+    
     @Column(nullable = false, name = "is_deleted")
     private boolean isDeleted = false;
-
-    public enum CarType {
-        SEDAN,
-        SUV,
-        HATCHBACK,
-        UNIVERSAL
-    }
+    
 }
