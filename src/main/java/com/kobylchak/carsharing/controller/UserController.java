@@ -25,7 +25,7 @@ public class UserController {
     @PutMapping("/{userId}/role")
     @PreAuthorize("hasRole('MANAGER')")
     public void updateUserRole(@PathVariable Long userId,
-                                          @RequestBody UpdateRoleRequestDto requestDto) {
+                                          @RequestBody @Valid UpdateRoleRequestDto requestDto) {
         userService.updateUserRole(userId, requestDto);
     }
     
