@@ -45,6 +45,4 @@ public class RentalSpecificationBuilder implements SpecificationBuilder<Rental> 
             return null;
         };
     }
-    
-    
 }

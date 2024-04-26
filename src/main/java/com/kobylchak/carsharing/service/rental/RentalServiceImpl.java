@@ -1,6 +1,5 @@
 package com.kobylchak.carsharing.service.rental;
 
-import com.kobylchak.carsharing.dto.car.CarDto;
 import com.kobylchak.carsharing.dto.rental.CreateRentalRequestDto;
 import com.kobylchak.carsharing.dto.rental.RentalDto;
 import com.kobylchak.carsharing.dto.rental.RentalSearchParameters;
@@ -11,7 +10,6 @@ import com.kobylchak.carsharing.model.User;
 import com.kobylchak.carsharing.repository.car.CarRepository;
 import com.kobylchak.carsharing.repository.rental.RentalRepository;
 import com.kobylchak.carsharing.repository.rental.RentalSpecificationBuilder;
-import com.kobylchak.carsharing.service.car.CarService;
 import java.time.LocalDate;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -26,12 +24,12 @@ public class RentalServiceImpl implements RentalService {
     private final RentalSpecificationBuilder rentalSpecificationBuilder;
     private final RentalMapper rentalMapper;
     private final CarRepository carRepository;
+    
     @Override
     @Transactional
     public RentalDto createRental(CreateRentalRequestDto requestDto, User user) {
         Car car = carRepository.findById(requestDto.getCarId())
-                               .orElseThrow(
-                                       () -> new RuntimeException("Car not found"));
+                               .orElseThrow(() -> new RuntimeException("Car not found"));
         Rental rental = rentalMapper.toModel(requestDto);
         rental.setUser(user);
         rental.setCar(car);
@@ -49,21 +47,28 @@ public class RentalServiceImpl implements RentalService {
     
     @Override
     public RentalDto getRentalById(Long id, User user) {
-        return rentalMapper.toDto(rentalRepository.findByUserAndId(user, id).orElseThrow(
-                () -> new RuntimeException("Rental not found")
-                                                                                        ));
+        return rentalMapper.toDto(rentalRepository.findByUserAndId(user, id)
+                                                  .orElseThrow(() -> new RuntimeException(
+                                                          "Rental with id: "
+                                                          + id
+                                                          + " not found")));
     }
     
     @Override
     @Transactional
     public RentalDto returnRental(Long id, User user) {
-        Rental rental = rentalRepository.findByUserAndId(user, id).orElseThrow(
-                () -> new RuntimeException("Rental not found"));
+        Rental rental = rentalRepository.findByUserAndId(user, id)
+                                        .orElseThrow(
+                                                () -> new RuntimeException("Rental with id: "
+                                                                           + id
+                                                                           + " not found"));
         rental.setActualReturnDate(LocalDate.now());
         rental.setActive(false);
-        Car car = carRepository.findById(rental.getCar().getId())
-                               .orElseThrow(
-                                       () -> new RuntimeException("Car not found"));
+        Car car = carRepository.findById(rental.getCar()
+                                               .getId())
+                               .orElseThrow(() -> new RuntimeException("Car with id: "
+                                                                       + id
+                                                                       + " not found"));
         car.setInventory(car.getInventory() + 1);
         carRepository.save(car);
         return rentalMapper.toDto(rentalRepository.save(rental));
