@@ -3,6 +3,7 @@ package com.kobylchak.carsharing.service.rental;
 import com.kobylchak.carsharing.dto.rental.CreateRentalRequestDto;
 import com.kobylchak.carsharing.dto.rental.RentalDto;
 import com.kobylchak.carsharing.dto.rental.RentalSearchParameters;
+import com.kobylchak.carsharing.exception.RentalException;
 import com.kobylchak.carsharing.mapper.rental.RentalMapper;
 import com.kobylchak.carsharing.model.Car;
 import com.kobylchak.carsharing.model.Rental;
@@ -29,13 +30,16 @@ public class RentalServiceImpl implements RentalService {
     @Transactional
     public RentalDto createRental(CreateRentalRequestDto requestDto, User user) {
         Car car = carRepository.findById(requestDto.getCarId())
-                               .orElseThrow(() -> new RuntimeException("Car not found"));
-        Rental rental = rentalMapper.toModel(requestDto);
-        rental.setUser(user);
-        rental.setCar(car);
-        car.setInventory(car.getInventory() - 1);
-        carRepository.save(car);
-        return rentalMapper.toDto(rentalRepository.save(rental));
+                               .orElseThrow(() -> new RentalException("Car not found"));
+        if (car.getInventory() > 0) {
+            Rental rental = rentalMapper.toModel(requestDto);
+            rental.setUser(user);
+            rental.setCar(car);
+            car.setInventory(car.getInventory() - 1);
+            carRepository.save(car);
+            return rentalMapper.toDto(rentalRepository.save(rental));
+        }
+        throw new RentalException("Car inventory is 0");
     }
     
     @Override
