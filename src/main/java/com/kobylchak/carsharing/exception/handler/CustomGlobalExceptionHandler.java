@@ -1,5 +1,6 @@
 package com.kobylchak.carsharing.exception.handler;
 
+import com.kobylchak.carsharing.exception.RentalException;
 import com.kobylchak.carsharing.exception.UserRegistrationException;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -20,6 +21,15 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
     
     @ExceptionHandler({UserRegistrationException.class})
     public ResponseEntity<Object> handleAccessException(UserRegistrationException exception) {
+        ExceptionResponseData data = new ExceptionResponseData();
+        data.setTimestamp(LocalDateTime.now());
+        data.setHttpStatus(HttpStatus.BAD_REQUEST);
+        data.setErrorData(List.of(new ErrorData(exception.getMessage())));
+        return new ResponseEntity<>(data, HttpStatus.BAD_REQUEST);
+    }
+    
+    @ExceptionHandler({RentalException.class})
+    public ResponseEntity<Object> handleRentalException(RentalException exception) {
         ExceptionResponseData data = new ExceptionResponseData();
         data.setTimestamp(LocalDateTime.now());
         data.setHttpStatus(HttpStatus.BAD_REQUEST);
