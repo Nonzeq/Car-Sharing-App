@@ -12,6 +12,7 @@ import com.kobylchak.carsharing.model.enums.UserRole;
 import com.kobylchak.carsharing.repository.car.CarRepository;
 import com.kobylchak.carsharing.repository.rental.RentalRepository;
 import com.kobylchak.carsharing.repository.rental.RentalSpecificationBuilder;
+import com.kobylchak.carsharing.service.notification.NotificationService;
 import java.time.LocalDate;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +27,7 @@ public class RentalServiceImpl implements RentalService {
     private final RentalSpecificationBuilder rentalSpecificationBuilder;
     private final RentalMapper rentalMapper;
     private final CarRepository carRepository;
+    private final NotificationService<Rental> rentalNotificationService;
     
     @Override
     @Transactional
@@ -38,7 +40,10 @@ public class RentalServiceImpl implements RentalService {
             rental.setCar(car);
             car.setInventory(car.getInventory() - 1);
             carRepository.save(car);
-            return rentalMapper.toDto(rentalRepository.save(rental));
+            Rental newRental = rentalRepository.save(rental);
+            RentalDto newRentalDto = rentalMapper.toDto(newRental);
+            rentalNotificationService.sendNotification(newRental);
+            return newRentalDto;
         }
         throw new RentalProcessingException("No free cars");
     }
