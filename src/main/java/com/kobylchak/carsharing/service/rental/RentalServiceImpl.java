@@ -3,11 +3,12 @@ package com.kobylchak.carsharing.service.rental;
 import com.kobylchak.carsharing.dto.rental.CreateRentalRequestDto;
 import com.kobylchak.carsharing.dto.rental.RentalDto;
 import com.kobylchak.carsharing.dto.rental.RentalSearchParameters;
-import com.kobylchak.carsharing.exception.RentalException;
+import com.kobylchak.carsharing.exception.RentalProcessingException;
 import com.kobylchak.carsharing.mapper.rental.RentalMapper;
 import com.kobylchak.carsharing.model.Car;
 import com.kobylchak.carsharing.model.Rental;
 import com.kobylchak.carsharing.model.User;
+import com.kobylchak.carsharing.model.enums.UserRole;
 import com.kobylchak.carsharing.repository.car.CarRepository;
 import com.kobylchak.carsharing.repository.rental.RentalRepository;
 import com.kobylchak.carsharing.repository.rental.RentalSpecificationBuilder;
@@ -30,7 +31,7 @@ public class RentalServiceImpl implements RentalService {
     @Transactional
     public RentalDto createRental(CreateRentalRequestDto requestDto, User user) {
         Car car = carRepository.findById(requestDto.getCarId())
-                               .orElseThrow(() -> new RentalException("Car not found"));
+                               .orElseThrow(() -> new RentalProcessingException("Car not found"));
         if (car.getInventory() > 0) {
             Rental rental = rentalMapper.toModel(requestDto);
             rental.setUser(user);
@@ -39,11 +40,20 @@ public class RentalServiceImpl implements RentalService {
             carRepository.save(car);
             return rentalMapper.toDto(rentalRepository.save(rental));
         }
-        throw new RentalException("Car inventory is 0");
+        throw new RentalProcessingException("No free cars");
     }
     
     @Override
-    public List<RentalDto> getRentalsByParameters(RentalSearchParameters parameters) {
+    public List<RentalDto> getRentalsByParameters(RentalSearchParameters parameters, User user) {
+        if (user.getRole()
+                .getName()
+                .equals(UserRole.MANAGER)) {
+            Specification<Rental> specification = rentalSpecificationBuilder.build(parameters);
+            List<Rental> rentals = rentalRepository.findAll(specification);
+            return rentalMapper.toDtos(rentals);
+        }
+        parameters.setUserId(user.getId()
+                                 .toString());
         Specification<Rental> specification = rentalSpecificationBuilder.build(parameters);
         List<Rental> rentals = rentalRepository.findAll(specification);
         return rentalMapper.toDtos(rentals);
@@ -52,7 +62,7 @@ public class RentalServiceImpl implements RentalService {
     @Override
     public RentalDto getRentalById(Long id, User user) {
         return rentalMapper.toDto(rentalRepository.findByUserAndId(user, id)
-                                                  .orElseThrow(() -> new RuntimeException(
+                                                  .orElseThrow(() -> new RentalProcessingException(
                                                           "Rental with id: "
                                                           + id
                                                           + " not found")));
@@ -63,18 +73,24 @@ public class RentalServiceImpl implements RentalService {
     public RentalDto returnRental(Long id, User user) {
         Rental rental = rentalRepository.findByUserAndId(user, id)
                                         .orElseThrow(
-                                                () -> new RuntimeException("Rental with id: "
-                                                                           + id
-                                                                           + " not found"));
-        rental.setActualReturnDate(LocalDate.now());
-        rental.setActive(false);
-        Car car = carRepository.findById(rental.getCar()
-                                               .getId())
-                               .orElseThrow(() -> new RuntimeException("Car with id: "
-                                                                       + id
-                                                                       + " not found"));
-        car.setInventory(car.getInventory() + 1);
-        carRepository.save(car);
-        return rentalMapper.toDto(rentalRepository.save(rental));
+                                                () -> new RentalProcessingException(
+                                                        "Rental with id: "
+                                                        + id
+                                                        + " not found"));
+        if (rental.isActive()) {
+            rental.setActualReturnDate(LocalDate.now());
+            rental.setActive(false);
+            Car car = carRepository.findById(rental.getCar()
+                                                   .getId())
+                                   .orElseThrow(() -> new RentalProcessingException(
+                                           "Car with id: "
+                                           + id
+                                           + " not "
+                                           + "found"));
+            car.setInventory(car.getInventory() + 1);
+            carRepository.save(car);
+            return rentalMapper.toDto(rentalRepository.save(rental));
+        }
+        throw new RentalProcessingException("Rental with id: " + id + " is already closed");
     }
 }

@@ -9,7 +9,7 @@ import java.util.List;
 public interface RentalService {
     RentalDto createRental(CreateRentalRequestDto requestDto, User user);
     
-    List<RentalDto> getRentalsByParameters(RentalSearchParameters parameters);
+    List<RentalDto> getRentalsByParameters(RentalSearchParameters parameters, User user);
     
     RentalDto getRentalById(Long id, User user);
     
