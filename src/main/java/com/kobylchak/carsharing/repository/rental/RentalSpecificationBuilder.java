@@ -19,12 +19,12 @@ public class RentalSpecificationBuilder implements SpecificationBuilder<Rental> 
         Specification<Rental> spec = Specification.where(getSpecWithUserAndCar());
         Map<String, String> parameters = searchParameters.getParameters();
         for (Map.Entry<String, String> entry : parameters.entrySet()) {
-            spec = setSpec(entry, spec);
+            spec = getSpecificationFor(entry, spec);
         }
         return spec;
     }
     
-    private Specification<Rental> setSpec(Map.Entry<String, String> entry,
+    private Specification<Rental> getSpecificationFor(Map.Entry<String, String> entry,
                                           Specification<Rental> spec) {
         String key = entry.getKey();
         String value = entry.getValue();

@@ -23,10 +23,12 @@ import org.springframework.web.bind.annotation.RestController;
 public class RentalController {
     private final RentalService rentalService;
     
-    @GetMapping
-    @PreAuthorize("hasRole('MANAGER')")
-    public List<RentalDto> searchRentals(@Valid RentalSearchParameters searchParameters) {
-        return rentalService.getRentalsByParameters(searchParameters);
+    @GetMapping("/")
+    @PreAuthorize("hasAnyRole('MANAGER', 'CUSTOMER')")
+    public List<RentalDto> searchRentals(@Valid RentalSearchParameters searchParameters,
+                                         Authentication authentication) {
+        User user = (User) authentication.getPrincipal();
+        return rentalService.getRentalsByParameters(searchParameters, user);
     }
     
     @PostMapping
