@@ -27,7 +27,8 @@ public class RentalServiceImpl implements RentalService {
     private final RentalSpecificationBuilder rentalSpecificationBuilder;
     private final RentalMapper rentalMapper;
     private final CarRepository carRepository;
-    private final NotificationService<Rental> rentalNotificationService;
+    private final NotificationService telegramNotificationService;
+    private final RentalMessageGenerator rentalMessageGenerator;
     
     @Override
     @Transactional
@@ -42,7 +43,8 @@ public class RentalServiceImpl implements RentalService {
             carRepository.save(car);
             Rental newRental = rentalRepository.save(rental);
             RentalDto newRentalDto = rentalMapper.toDto(newRental);
-            rentalNotificationService.sendNotification(newRental);
+            telegramNotificationService.sendNotification(
+                    rentalMessageGenerator.getForCreating(newRental));
             return newRentalDto;
         }
         throw new RentalProcessingException("No free cars");

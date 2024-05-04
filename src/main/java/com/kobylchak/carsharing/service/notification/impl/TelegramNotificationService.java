@@ -1,7 +1,6 @@
 package com.kobylchak.carsharing.service.notification.impl;
 
 import com.kobylchak.carsharing.exception.NotificationExcetion;
-import com.kobylchak.carsharing.model.Rental;
 import com.kobylchak.carsharing.service.notification.NotificationService;
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.model.request.ParseMode;
@@ -13,14 +12,14 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class TelegramNotificationService implements NotificationService<Rental> {
+public class TelegramNotificationService implements NotificationService {
     @Value("${telegram.chat.id}")
     private String chatId;
     private final TelegramBot telegramBot;
     
     @Override
-    public void sendNotification(Rental rental) {
-        SendMessage req = new SendMessage(chatId, prepareMessage(rental))
+    public void sendNotification(String text) {
+        SendMessage req = new SendMessage(chatId, text)
                                   .parseMode(ParseMode.HTML)
                                   .disableWebPagePreview(true)
                                   .disableNotification(true)
@@ -30,21 +29,5 @@ public class TelegramNotificationService implements NotificationService<Rental> 
             throw new NotificationExcetion("Can't send notification, response: "
                                            + response.message());
         }
-    }
-    
-    private String prepareMessage(Rental rental) {
-        return "<b>Created new Rental</b>"
-               + System.lineSeparator()
-               + "<b>ID</b>: " + rental.getId()
-               + System.lineSeparator()
-               + "<b>Date</b>: " + rental.getRentalDate()
-               + System.lineSeparator()
-               + "<b>Car brand</b>: " + rental.getCar().getBrand()
-               + System.lineSeparator()
-               + "<b>Car model</b>: " + rental.getCar().getModel()
-               + System.lineSeparator()
-               + "<b>Return date</b>: " + rental.getReturnDate()
-               + System.lineSeparator()
-               + "<b>User email</b>: " + rental.getUser().getEmail();
     }
 }
