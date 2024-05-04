@@ -12,10 +12,12 @@ import com.kobylchak.carsharing.model.enums.UserRole;
 import com.kobylchak.carsharing.repository.car.CarRepository;
 import com.kobylchak.carsharing.repository.rental.RentalRepository;
 import com.kobylchak.carsharing.repository.rental.RentalSpecificationBuilder;
+import com.kobylchak.carsharing.service.notification.NotificationService;
 import java.time.LocalDate;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,6 +28,8 @@ public class RentalServiceImpl implements RentalService {
     private final RentalSpecificationBuilder rentalSpecificationBuilder;
     private final RentalMapper rentalMapper;
     private final CarRepository carRepository;
+    private final NotificationService telegramNotificationService;
+    private final RentalMessageGenerator rentalMessageGenerator;
     
     @Override
     @Transactional
@@ -38,7 +42,11 @@ public class RentalServiceImpl implements RentalService {
             rental.setCar(car);
             car.setInventory(car.getInventory() - 1);
             carRepository.save(car);
-            return rentalMapper.toDto(rentalRepository.save(rental));
+            Rental newRental = rentalRepository.save(rental);
+            RentalDto newRentalDto = rentalMapper.toDto(newRental);
+            telegramNotificationService.sendNotification(
+                    rentalMessageGenerator.getForCreating(newRental));
+            return newRentalDto;
         }
         throw new RentalProcessingException("No free cars");
     }
@@ -92,5 +100,22 @@ public class RentalServiceImpl implements RentalService {
             return rentalMapper.toDto(rentalRepository.save(rental));
         }
         throw new RentalProcessingException("Rental with id: " + id + " is already closed");
+    }
+    
+    @Scheduled(cron = "0 1 1 * * *")
+    public void checkOverdueRentals() {
+        List<Rental> allOverdueRentals = rentalRepository.findAllOverdueRentals();
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(rentalMessageGenerator.getTitleForOverdue());
+        if (allOverdueRentals.isEmpty()) {
+            stringBuilder.append(rentalMessageGenerator.getForNotOverdue());
+            telegramNotificationService.sendNotification(stringBuilder.toString());
+        } else {
+            for (Rental rental : allOverdueRentals) {
+                stringBuilder.append(rentalMessageGenerator.getForOverdue(rental))
+                             .append("\n");
+            }
+            telegramNotificationService.sendNotification(stringBuilder.toString());
+        }
     }
 }
