@@ -7,5 +7,7 @@ public interface RentalMessageGenerator {
     
     String getForOverdue(Rental rental);
     
-    String getForNotOverdue(Rental rental);
+    String getForNotOverdue();
+    
+    String getTitleForOverdue();
 }

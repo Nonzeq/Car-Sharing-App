@@ -26,9 +26,7 @@ public class RentalMessageGeneratorImpl implements RentalMessageGenerator {
     
     @Override
     public String getForOverdue(Rental rental) {
-        return "<b>Overdue Rental</b>"
-               + System.lineSeparator()
-               + "<b>ID</b>: " + rental.getId()
+        return "<b>ID</b>: " + rental.getId()
                + System.lineSeparator()
                + "<b>Date</b>: " + rental.getRentalDate()
                + System.lineSeparator()
@@ -39,13 +37,23 @@ public class RentalMessageGeneratorImpl implements RentalMessageGenerator {
                + "<b>Return date</b>: " + rental.getReturnDate()
                + System.lineSeparator()
                + "<b>Overdue days</b>: "
-               + (LocalDate.now().getDayOfYear() - rental.getRentalDate().getDayOfYear())
+               + (LocalDate.now().getDayOfYear() - rental.getReturnDate().getDayOfYear())
                + System.lineSeparator()
-               + "<b>User email</b>: " + rental.getUser().getEmail();
+               + "<b>User email</b>: " + rental.getUser().getEmail()
+               + System.lineSeparator();
     }
     
     @Override
-    public String getForNotOverdue(Rental rental) {
+    public String getForNotOverdue() {
         return  "No rentals overdue today!" ;
+    }
+    
+    @Override
+    public String getTitleForOverdue() {
+        return  "<b>"
+                + "OVERDUE RENTALS for date: "
+                + LocalDate.now()
+                + "</b>"
+                + System.lineSeparator();
     }
 }
