@@ -45,15 +45,15 @@ public class RentalMessageGeneratorImpl implements RentalMessageGenerator {
     
     @Override
     public String getForNotOverdue() {
-        return  "No rentals overdue today!" ;
+        return "No rentals overdue today!";
     }
     
     @Override
     public String getTitleForOverdue() {
-        return  "<b>"
-                + "OVERDUE RENTALS for date: "
-                + LocalDate.now()
-                + "</b>"
-                + System.lineSeparator();
+        return "<b>"
+               + "OVERDUE RENTALS for date: "
+               + LocalDate.now()
+               + "</b>"
+               + System.lineSeparator();
     }
 }

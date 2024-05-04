@@ -107,13 +107,13 @@ public class RentalServiceImpl implements RentalService {
         List<Rental> allOverdueRentals = rentalRepository.findAllOverdueRentals();
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(rentalMessageGenerator.getTitleForOverdue());
-        if(allOverdueRentals.isEmpty()) {
+        if (allOverdueRentals.isEmpty()) {
             stringBuilder.append(rentalMessageGenerator.getForNotOverdue());
             telegramNotificationService.sendNotification(stringBuilder.toString());
         } else {
             for (Rental rental : allOverdueRentals) {
                 stringBuilder.append(rentalMessageGenerator.getForOverdue(rental))
-                                     .append("\n");
+                             .append("\n");
             }
             telegramNotificationService.sendNotification(stringBuilder.toString());
         }
