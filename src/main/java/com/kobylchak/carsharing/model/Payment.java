@@ -43,7 +43,7 @@ public class Payment {
     private Rental rental;
     
     @Column(nullable = false, name = "session_url")
-    private URL sessionURL;
+    private URL sessionUrl;
     
     @Column(nullable = false, name = "session_id")
     private String sessionId;

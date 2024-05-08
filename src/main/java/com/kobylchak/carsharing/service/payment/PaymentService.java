@@ -2,10 +2,11 @@ package com.kobylchak.carsharing.service.payment;
 
 import com.kobylchak.carsharing.dto.payment.CreatePaymentRequestDto;
 import com.kobylchak.carsharing.dto.payment.PaymentDto;
-import com.kobylchak.carsharing.dto.payment.SearchPaymentParameters;
+import com.kobylchak.carsharing.model.User;
+import java.util.List;
 
 public interface PaymentService {
-    PaymentDto createPayment(CreatePaymentRequestDto requestDto);
+    PaymentDto createPayment(CreatePaymentRequestDto requestDto, User user);
     
-    PaymentDto getPayment(SearchPaymentParameters parameters);
+    List<PaymentDto> getPayments(Long userId, User user);
 }
