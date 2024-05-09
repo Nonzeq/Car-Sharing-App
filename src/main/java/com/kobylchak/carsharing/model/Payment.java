@@ -50,4 +50,7 @@ public class Payment {
     
     @Column(nullable = false, name = "amount_to_pay")
     private BigDecimal amountToPay;
+    
+    @Column(nullable = false, name = "is_deleted")
+    private boolean isDeleted = false;
 }

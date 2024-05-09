@@ -9,4 +9,7 @@ public interface PaymentService {
     PaymentDto createPayment(CreatePaymentRequestDto requestDto, User user);
     
     List<PaymentDto> getPayments(Long userId, User user);
+    
+    String success(String sessionId);
+    void cancel(String sessionId);
 }
