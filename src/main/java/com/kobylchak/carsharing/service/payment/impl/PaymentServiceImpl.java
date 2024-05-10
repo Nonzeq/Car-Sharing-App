@@ -75,7 +75,7 @@ public class PaymentServiceImpl implements PaymentService {
                 () -> new EntityNotFoundException("Can't find Payment by session id: "
                                                   + sessionId));
         if (stripeService.checkSuccess(sessionId)
-            && !payment.getStatus().equals(PaymentStatus.PAID)) {
+                && !payment.getStatus().equals(PaymentStatus.PAID)) {
             payment.setStatus(PaymentStatus.PAID);
             paymentRepository.save(payment);
             notificationService.sendNotification("Payment for sessionId: "
@@ -108,7 +108,7 @@ public class PaymentServiceImpl implements PaymentService {
             return fee.multiply(BigDecimal.valueOf(daysOfUse));
         }
         long daysOfOverdue = ChronoUnit.DAYS.between(rental.getReturnDate(),
-                                                 rental.getActualReturnDate());
+                                                     rental.getActualReturnDate());
         return fee.multiply(BigDecimal.valueOf(daysOfOverdue)).multiply(FINE_MULTIPLIER);
     }
 }
