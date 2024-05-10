@@ -10,6 +10,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import java.math.BigDecimal;
@@ -38,8 +39,8 @@ public class Payment {
     @Column(columnDefinition = "varchar")
     private PaymentType type;
     
-    @OneToOne
-    @JoinColumn(name = "rental_id")
+    @ManyToOne
+    @JoinColumn(name = "rental_id", nullable = false, unique = true)
     private Rental rental;
     
     @Column(nullable = false, name = "session_url")

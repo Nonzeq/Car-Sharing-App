@@ -1,6 +1,7 @@
-package com.kobylchak.carsharing.service.rental;
+package com.kobylchak.carsharing.service.rental.impl;
 
 import com.kobylchak.carsharing.model.Rental;
+import com.kobylchak.carsharing.service.rental.RentalMessageGenerator;
 import java.time.LocalDate;
 import org.springframework.stereotype.Component;
 
