@@ -17,4 +17,6 @@ public interface RentalRepository extends JpaRepository<Rental, Long>,
                + "join fetch rental.user "
                + "where rental.returnDate <= current date and rental.actualReturnDate is null")
     List<Rental> findAllOverdueRentals();
+    
+    List<Rental> findAllByUserId(Long userId);
 }

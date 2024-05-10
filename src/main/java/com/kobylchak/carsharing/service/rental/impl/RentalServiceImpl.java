@@ -1,4 +1,4 @@
-package com.kobylchak.carsharing.service.rental;
+package com.kobylchak.carsharing.service.rental.impl;
 
 import com.kobylchak.carsharing.dto.rental.CreateRentalRequestDto;
 import com.kobylchak.carsharing.dto.rental.RentalDto;
@@ -13,6 +13,8 @@ import com.kobylchak.carsharing.repository.car.CarRepository;
 import com.kobylchak.carsharing.repository.rental.RentalRepository;
 import com.kobylchak.carsharing.repository.rental.RentalSpecificationBuilder;
 import com.kobylchak.carsharing.service.notification.NotificationService;
+import com.kobylchak.carsharing.service.rental.RentalMessageGenerator;
+import com.kobylchak.carsharing.service.rental.RentalService;
 import java.time.LocalDate;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
