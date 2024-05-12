@@ -2,45 +2,48 @@ package com.kobylchak.carsharing.controller;
 
 import com.kobylchak.carsharing.dto.payment.CreatePaymentRequestDto;
 import com.kobylchak.carsharing.dto.payment.PaymentDto;
+import com.kobylchak.carsharing.dto.payment.SuccessDto;
 import com.kobylchak.carsharing.model.User;
 import com.kobylchak.carsharing.service.payment.PaymentService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
-@Controller
+@RestController
 @RequestMapping("api/payments")
 @RequiredArgsConstructor
 public class PaymentController {
     private final PaymentService paymentService;
     
     @GetMapping("/")
-    public @ResponseBody List<PaymentDto> getPayments(
+    public List<PaymentDto> getPayments(
                 @RequestParam("user_id") Long userId,
                 Authentication authentication) {
         User user = (User) authentication.getPrincipal();
         return paymentService.getPayments(userId, user);
     }
     
-    @PostMapping("/")
-    public @ResponseBody PaymentDto createPayment(@RequestBody CreatePaymentRequestDto requestDto,
+    @PostMapping
+    public PaymentDto createPayment(@RequestBody CreatePaymentRequestDto requestDto,
                                                   Authentication authentication) {
         User user = (User) authentication.getPrincipal();
         return paymentService.createPayment(requestDto, user);
     }
     
     @GetMapping("/success")
-    public String success(@RequestParam("session_id") String sessionId, Model model) {
-        String message = paymentService.success(sessionId);
-        model.addAttribute("message", message);
+    public SuccessDto success(@RequestParam("session_id") String sessionId) {
+        return paymentService.success(sessionId);
+    }
+    
+    @GetMapping("/cancel")
+    public String cancel() {
+        
         return "success_payment";
     }
 }

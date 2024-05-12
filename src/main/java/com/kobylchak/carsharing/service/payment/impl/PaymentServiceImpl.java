@@ -2,6 +2,7 @@ package com.kobylchak.carsharing.service.payment.impl;
 
 import com.kobylchak.carsharing.dto.payment.CreatePaymentRequestDto;
 import com.kobylchak.carsharing.dto.payment.PaymentDto;
+import com.kobylchak.carsharing.dto.payment.SuccessDto;
 import com.kobylchak.carsharing.exception.PaymentException;
 import com.kobylchak.carsharing.mapper.payment.PaymentMapper;
 import com.kobylchak.carsharing.model.Payment;
@@ -70,7 +71,7 @@ public class PaymentServiceImpl implements PaymentService {
     }
     
     @Override
-    public String success(String sessionId) {
+    public SuccessDto success(String sessionId) {
         Payment payment = paymentRepository.findBySessionId(sessionId).orElseThrow(
                 () -> new EntityNotFoundException("Can't find Payment by session id: "
                                                   + sessionId));
@@ -81,9 +82,9 @@ public class PaymentServiceImpl implements PaymentService {
             notificationService.sendNotification("Payment for sessionId: "
                                                  + sessionId
                                                  + " was successful");
-            return "Your payment has been completed successfully";
+            return new SuccessDto("Your payment has been completed successfully");
         }
-        return "Something went wrong";
+        return new SuccessDto("Something went wrong");
     }
     
     @Override
