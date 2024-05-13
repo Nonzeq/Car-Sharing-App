@@ -8,4 +8,8 @@ public interface StripeInternalService {
     Session createSession(User user, Payment payment);
     
     boolean checkSuccess(String sessionId);
+    
+    boolean checkCancel(String sessionId);
+    
+    Session getSessionById(String sessionId);
 }

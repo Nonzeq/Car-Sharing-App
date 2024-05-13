@@ -1,7 +1,9 @@
 package com.kobylchak.carsharing.service.payment.impl;
 
 import com.kobylchak.carsharing.dto.payment.CreatePaymentRequestDto;
+import com.kobylchak.carsharing.dto.payment.PaymentCancelDto;
 import com.kobylchak.carsharing.dto.payment.PaymentDto;
+import com.kobylchak.carsharing.dto.payment.PaymentSuccessDto;
 import com.kobylchak.carsharing.exception.PaymentException;
 import com.kobylchak.carsharing.mapper.payment.PaymentMapper;
 import com.kobylchak.carsharing.model.Payment;
@@ -46,11 +48,14 @@ public class PaymentServiceImpl implements PaymentService {
             throw new PaymentException("Payment for rental id: " + requestDto.getRentalId()
                                        + " already created");
         }
-        Rental rental = rentalRepository.findById(requestDto.getRentalId()).orElseThrow(
-                () -> new EntityNotFoundException("Rental with id: "
-                                                  + requestDto.getRentalId()
-                                                  + " not found"));
-        Payment payment = createPaymentEntity(rental, requestDto.getPaymentType());
+        Rental rental = rentalRepository
+                                .findByIdAndActualReturnDateIsExist(requestDto.getRentalId())
+                                .orElseThrow(
+                                        () -> new EntityNotFoundException("Rental with id: "
+                                                                          + requestDto.getRentalId()
+                                                                          + " not found or not "
+                                                                          + "returned"));
+        Payment payment = createPaymentBeforeSession(rental, requestDto.getPaymentType());
         Session session = stripeService.createSession(user, payment);
         payment.setSessionUrl(new URL(session.getUrl()));
         payment.setSessionId(session.getId());
@@ -70,7 +75,7 @@ public class PaymentServiceImpl implements PaymentService {
     }
     
     @Override
-    public String success(String sessionId) {
+    public PaymentSuccessDto success(String sessionId) {
         Payment payment = paymentRepository.findBySessionId(sessionId).orElseThrow(
                 () -> new EntityNotFoundException("Can't find Payment by session id: "
                                                   + sessionId));
@@ -81,17 +86,31 @@ public class PaymentServiceImpl implements PaymentService {
             notificationService.sendNotification("Payment for sessionId: "
                                                  + sessionId
                                                  + " was successful");
-            return "Your payment has been completed successfully";
+            PaymentSuccessDto paymentMessageDto = new PaymentSuccessDto();
+            paymentMessageDto.setMessage("Your payment has been completed successfully");
+            return paymentMessageDto;
         }
-        return "Something went wrong";
+        return new PaymentSuccessDto("Something went wrong");
     }
     
     @Override
-    public void cancel(String sessionId) {
-    
+    public PaymentCancelDto cancel(String sessionId) {
+        Payment payment = paymentRepository.findBySessionId(sessionId).orElseThrow(
+                () -> new EntityNotFoundException("Can't find Payment by session id: "
+                                                  + sessionId));
+        Session session = stripeService.getSessionById(sessionId);
+        if (stripeService.checkCancel(sessionId)) {
+            PaymentCancelDto paymentCancelDto = new PaymentCancelDto();
+            paymentCancelDto.setMessage("Payment can be made later "
+                                        + "the session is available "
+                                        + " 24 hours");
+            paymentCancelDto.setSessionUrl(session.getUrl());
+            return paymentCancelDto;
+        }
+        return new PaymentCancelDto("Your session has expired", session.getUrl());
     }
     
-    private Payment createPaymentEntity(Rental rental, PaymentType paymentType) {
+    private Payment createPaymentBeforeSession(Rental rental, PaymentType paymentType) {
         Payment payment = new Payment();
         payment.setType(paymentType);
         payment.setRental(rental);
@@ -104,7 +123,7 @@ public class PaymentServiceImpl implements PaymentService {
         BigDecimal fee = rental.getCar().getDailyFee();
         if (paymentType.equals(PaymentType.PAYMENT)) {
             long daysOfUse = ChronoUnit.DAYS.between(rental.getRentalDate(),
-                                                     rental.getReturnDate());
+                                                     rental.getActualReturnDate());
             return fee.multiply(BigDecimal.valueOf(daysOfUse));
         }
         long daysOfOverdue = ChronoUnit.DAYS.between(rental.getReturnDate(),

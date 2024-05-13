@@ -19,4 +19,7 @@ public interface RentalRepository extends JpaRepository<Rental, Long>,
     List<Rental> findAllOverdueRentals();
     
     List<Rental> findAllByUserId(Long userId);
+    
+    @Query("from Rental rental where rental.id = :id and rental.actualReturnDate is not null")
+    Optional<Rental> findByIdAndActualReturnDateIsExist(Long id);
 }
