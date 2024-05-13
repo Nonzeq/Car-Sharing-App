@@ -4,6 +4,7 @@ import com.kobylchak.carsharing.service.notification.message.MessageBuilder;
 
 public class TelegramMessageBuilder implements MessageBuilder {
     private final StringBuilder sb = new StringBuilder();
+    
     @Override
     public MessageBuilder title(String title) {
         sb.append("<b>")
@@ -32,6 +33,7 @@ public class TelegramMessageBuilder implements MessageBuilder {
     private class TelegramListItemBuilder implements MessageBuilder.ListItemBuilder {
         private final StringBuilder sb = new StringBuilder();
         private int itemCount = 1;
+        
         @Override
         public MessageBuilder.ListItemBuilder item(String item) {
             sb.append("<b>")
