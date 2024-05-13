@@ -2,9 +2,12 @@ package com.kobylchak.carsharing.dto.payment;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @AllArgsConstructor
-public class SuccessDto {
+@NoArgsConstructor
+public class PaymentCancelDto {
     private String message;
+    private String sessionUrl;
 }

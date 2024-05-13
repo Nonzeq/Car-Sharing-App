@@ -23,6 +23,8 @@ public class StripeInternalServiceImpl implements StripeInternalService {
     private static final String CHECKOUT_SESSION_ID = "?session_id={CHECKOUT_SESSION_ID}";
     private static final long QUANTITY = 1;
     private static final long STRIPE_AMOUNT_MULTIPLIER = 100;
+    private static final String EXPIRED = "expired";
+    private static final String PAID = "paid";
     @Value("${url.success}")
     private String successUrl;
     @Value("${url.cancel}")
@@ -42,7 +44,7 @@ public class StripeInternalServiceImpl implements StripeInternalService {
             Builder builder = SessionCreateParams.builder()
                                       .setCustomerEmail(user.getEmail())
                                       .setSuccessUrl(successUrl + CHECKOUT_SESSION_ID)
-                                      .setCancelUrl(cancelUrl)
+                                      .setCancelUrl(cancelUrl + CHECKOUT_SESSION_ID)
                                       .setMode(SessionCreateParams.Mode.PAYMENT)
                                       .addPaymentMethodType(SessionCreateParams
                                                                     .PaymentMethodType.CARD)
@@ -55,9 +57,20 @@ public class StripeInternalServiceImpl implements StripeInternalService {
     
     @Override
     public boolean checkSuccess(String sessionId) {
+        Session session = getSessionById(sessionId);
+        return session.getPaymentStatus().equals(PAID);
+    }
+    
+    @Override
+    public boolean checkCancel(String sessionId) {
+        Session session = getSessionById(sessionId);
+        return !session.getPaymentStatus().equals(EXPIRED);
+    }
+    
+    @Override
+    public Session getSessionById(String sessionId) {
         try {
-            Session session = Session.retrieve(sessionId);
-            return session.getPaymentStatus().equals("paid");
+            return Session.retrieve(sessionId);
         } catch (StripeException e) {
             throw new RuntimeException("Can't retrieve session with id: " + sessionId, e);
         }

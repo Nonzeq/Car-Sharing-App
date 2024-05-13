@@ -1,8 +1,9 @@
 package com.kobylchak.carsharing.controller;
 
 import com.kobylchak.carsharing.dto.payment.CreatePaymentRequestDto;
+import com.kobylchak.carsharing.dto.payment.PaymentCancelDto;
 import com.kobylchak.carsharing.dto.payment.PaymentDto;
-import com.kobylchak.carsharing.dto.payment.SuccessDto;
+import com.kobylchak.carsharing.dto.payment.PaymentSuccessDto;
 import com.kobylchak.carsharing.model.User;
 import com.kobylchak.carsharing.service.payment.PaymentService;
 import java.util.List;
@@ -37,13 +38,12 @@ public class PaymentController {
     }
     
     @GetMapping("/success")
-    public SuccessDto success(@RequestParam("session_id") String sessionId) {
+    public PaymentSuccessDto success(@RequestParam("session_id") String sessionId) {
         return paymentService.success(sessionId);
     }
     
     @GetMapping("/cancel")
-    public String cancel() {
-        
-        return "success_payment";
+    public PaymentCancelDto cancel(@RequestParam("session_id") String sessionId) {
+        return paymentService.cancel(sessionId);
     }
 }
