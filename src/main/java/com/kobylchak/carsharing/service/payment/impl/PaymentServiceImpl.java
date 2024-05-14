@@ -15,7 +15,6 @@ import com.kobylchak.carsharing.model.enums.UserRole;
 import com.kobylchak.carsharing.repository.payment.PaymentRepository;
 import com.kobylchak.carsharing.repository.rental.RentalRepository;
 import com.kobylchak.carsharing.service.notification.NotificationService;
-import com.kobylchak.carsharing.service.notification.message.NotificationMessage;
 import com.kobylchak.carsharing.service.notification.message.impl.TelegramMessageBuilder;
 import com.kobylchak.carsharing.service.payment.PaymentService;
 import com.kobylchak.carsharing.service.stripe.StripeInternalService;
@@ -40,7 +39,6 @@ public class PaymentServiceImpl implements PaymentService {
     private final StripeInternalService stripeService;
     private final RentalRepository rentalRepository;
     private final NotificationService notificationService;
-    private final NotificationMessage<TelegramMessageBuilder> telegramMessage;
     
     @Override
     @SneakyThrows
@@ -112,7 +110,7 @@ public class PaymentServiceImpl implements PaymentService {
     }
     
     private String createSuccessPaymentMessage(Payment payment) {
-        return telegramMessage.builder()
+        return notificationService.messageBuilder()
                        .title("Successful payment")
                        .listItems()
                        .item("ID: " + payment.getId())

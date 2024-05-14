@@ -14,8 +14,6 @@ import com.kobylchak.carsharing.repository.rental.RentalRepository;
 import com.kobylchak.carsharing.repository.rental.RentalSpecificationBuilder;
 import com.kobylchak.carsharing.service.notification.NotificationService;
 import com.kobylchak.carsharing.service.notification.message.MessageBuilder;
-import com.kobylchak.carsharing.service.notification.message.NotificationMessage;
-import com.kobylchak.carsharing.service.notification.message.impl.TelegramMessageBuilder;
 import com.kobylchak.carsharing.service.rental.RentalService;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
@@ -35,14 +33,12 @@ public class RentalServiceImpl implements RentalService {
     private final RentalMapper rentalMapper;
     private final CarRepository carRepository;
     private final NotificationService telegramNotificationService;
-    private final NotificationMessage<TelegramMessageBuilder> telegramMessage;
     
     @Override
     public RentalDto createRental(CreateRentalRequestDto requestDto, User user) {
         Car car = carRepository.findById(requestDto.getCarId())
                           .orElseThrow(() -> new RentalProcessingException("Car not found"));
-        List<Rental> rentals = rentalRepository.findAllByUserIdAndIsActive(
-                user.getId());
+        List<Rental> rentals = rentalRepository.findAllByUserIdAndIsActive(user.getId());
         if (!rentals.isEmpty()) {
             throw new RentalProcessingException("You already have active rental");
         }
@@ -99,48 +95,39 @@ public class RentalServiceImpl implements RentalService {
     public void checkOverdueRentals() {
         List<Rental> allOverdueRentals = rentalRepository.findAllOverdueRentals();
         if (allOverdueRentals.isEmpty()) {
-            String message = telegramMessage.builder()
+            String message = telegramNotificationService.messageBuilder()
                                      .title("No rentals overdue today! " + LocalDate.now())
                                      .build();
             telegramNotificationService.sendNotification(message);
         } else {
-            MessageBuilder builder = telegramMessage.builder()
-                                             .title("Overdue rentals for date: "
-                                                    + LocalDate.now());
+            MessageBuilder builder = telegramNotificationService.messageBuilder()
+                                             .title("Overdue rentals for date: " + LocalDate.now());
             for (Rental rental : allOverdueRentals) {
                 long daysOfOverdue = ChronoUnit.DAYS.between(rental.getReturnDate(),
-                                                       LocalDate.now());
-                builder
-                        .listItems()
-                        .item("ID: " + rental.getId())
+                                                             LocalDate.now());
+                builder.listItems().item("ID: " + rental.getId())
                         .item("Rental date: " + rental.getRentalDate())
                         .item("Car brand: " + rental.getCar().getBrand())
                         .item("Car model: " + rental.getCar().getModel())
                         .item("Return date: " + rental.getReturnDate())
-                        .item("Actual return date: "
-                              + rental.getActualReturnDate())
+                        .item("Actual return date: " + rental.getActualReturnDate())
                         .item("Days of overdue: " + daysOfOverdue)
-                        .item("User email : " + rental.getUser().getEmail())
-                        .buildItemsList()
-                        .newLine();
+                        .item("User email : " + rental.getUser().getEmail()).item("\n")
+                        .buildItemsList();
             }
             telegramNotificationService.sendNotification(builder.build());
         }
     }
     
     private String createMessageForNewRental(Rental rental) {
-        return telegramMessage.builder()
-                       .title("Create new Rental")
-                       .listItems()
-                       .item("ID: " + rental.getId())
-                       .item("Rental date: " + rental.getRentalDate())
+        return telegramNotificationService.messageBuilder()
+                       .title("Create new Rental").listItems()
+                       .item("ID: " + rental.getId()).item("Rental date: " + rental.getRentalDate())
                        .item("Car brand: " + rental.getCar().getBrand())
                        .item("Car model: " + rental.getCar().getModel())
                        .item("Return date: " + rental.getReturnDate())
-                       .item("Actual return date: "
-                             + rental.getActualReturnDate())
-                       .item("User email : " + rental.getUser().getEmail())
-                       .buildItemsList()
+                       .item("Actual return date: " + rental.getActualReturnDate())
+                       .item("User email : " + rental.getUser().getEmail()).buildItemsList()
                        .build();
     }
 }

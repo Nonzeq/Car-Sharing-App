@@ -1,6 +1,7 @@
 package com.kobylchak.carsharing.service.notification.message.impl;
 
 import com.kobylchak.carsharing.service.notification.message.MessageBuilder;
+import org.springframework.util.StringUtils;
 
 public class TelegramMessageBuilder implements MessageBuilder {
     private final StringBuilder sb = new StringBuilder();
@@ -16,13 +17,7 @@ public class TelegramMessageBuilder implements MessageBuilder {
     
     @Override
     public ListItemBuilder listItems() {
-        return new TelegramMessageBuilder.TelegramListItemBuilder();
-    }
-    
-    @Override
-    public MessageBuilder newLine() {
-        sb.append("\n");
-        return this;
+        return new TelegramMessageBuilder.ListItemBuilder();
     }
     
     @Override
@@ -30,18 +25,20 @@ public class TelegramMessageBuilder implements MessageBuilder {
         return sb.toString();
     }
     
-    private class TelegramListItemBuilder implements MessageBuilder.ListItemBuilder {
+    private class ListItemBuilder implements MessageBuilder.ListItemBuilder {
         private final StringBuilder sb = new StringBuilder();
         private int itemCount = 1;
         
         @Override
         public MessageBuilder.ListItemBuilder item(String item) {
-            sb.append("<b>")
-                    .append(itemCount++)
-                    .append(") ")
-                    .append("</b>")
-                    .append(item)
-                    .append("\n");
+            if (StringUtils.hasText(item)){
+                sb.append("<b>")
+                        .append(itemCount++)
+                        .append(") ")
+                        .append("</b>")
+                        .append(item)
+                        .append("\n");
+            }
             return this;
         }
         

@@ -5,8 +5,6 @@ public interface MessageBuilder {
     
     ListItemBuilder listItems();
     
-    MessageBuilder newLine();
-    
     String build();
     
     interface ListItemBuilder {
