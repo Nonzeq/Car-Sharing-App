@@ -15,7 +15,6 @@ import com.kobylchak.carsharing.model.enums.UserRole;
 import com.kobylchak.carsharing.repository.payment.PaymentRepository;
 import com.kobylchak.carsharing.repository.rental.RentalRepository;
 import com.kobylchak.carsharing.service.notification.NotificationService;
-import com.kobylchak.carsharing.service.notification.message.impl.TelegramMessageBuilder;
 import com.kobylchak.carsharing.service.payment.PaymentService;
 import com.kobylchak.carsharing.service.stripe.StripeInternalService;
 import com.stripe.model.checkout.Session;

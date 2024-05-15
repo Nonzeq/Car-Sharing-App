@@ -66,7 +66,7 @@ public class TelegramNotificationService implements NotificationService {
             
             @Override
             public MessageBuilder.ListItemBuilder item(String item) {
-                if (StringUtils.hasText(item)){
+                if (StringUtils.hasText(item)) {
                     sb.append("<b>")
                             .append(itemCount++)
                             .append(") ")
