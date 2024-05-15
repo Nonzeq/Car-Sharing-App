@@ -83,9 +83,7 @@ public class PaymentServiceImpl implements PaymentService {
                 && !payment.getStatus().equals(PaymentStatus.PAID)) {
             payment.setStatus(PaymentStatus.PAID);
             paymentRepository.save(payment);
-            notificationService.sendNotification("Payment for sessionId: "
-                                                 + sessionId
-                                                 + " was successful");
+            notificationService.sendNotification(createSuccessPaymentMessage(payment));
             PaymentSuccessDto paymentMessageDto = new PaymentSuccessDto();
             paymentMessageDto.setMessage("Your payment has been completed successfully");
             return paymentMessageDto;
@@ -108,6 +106,18 @@ public class PaymentServiceImpl implements PaymentService {
             return paymentCancelDto;
         }
         return new PaymentCancelDto("Your session has expired", session.getUrl());
+    }
+    
+    private String createSuccessPaymentMessage(Payment payment) {
+        return notificationService.messageBuilder()
+                       .title("Successful payment")
+                       .listItems()
+                       .item("ID: " + payment.getId())
+                       .item("Status: " + payment.getStatus())
+                       .item("Type: " + payment.getType())
+                       .item("Amount was paid" + payment.getAmountToPay())
+                       .buildItemsList()
+                       .build();
     }
     
     private Payment createPaymentBeforeSession(Rental rental, PaymentType paymentType) {
