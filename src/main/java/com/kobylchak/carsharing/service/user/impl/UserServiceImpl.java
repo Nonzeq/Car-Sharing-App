@@ -1,4 +1,4 @@
-package com.kobylchak.carsharing.service.user;
+package com.kobylchak.carsharing.service.user.impl;
 
 import com.kobylchak.carsharing.dto.role.UpdateRoleRequestDto;
 import com.kobylchak.carsharing.dto.user.UpdateUserInfoRequestDto;
@@ -12,6 +12,7 @@ import com.kobylchak.carsharing.model.User;
 import com.kobylchak.carsharing.model.enums.UserRole;
 import com.kobylchak.carsharing.repository.role.RoleRepository;
 import com.kobylchak.carsharing.repository.user.UserReposiotry;
+import com.kobylchak.carsharing.service.user.UserService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;

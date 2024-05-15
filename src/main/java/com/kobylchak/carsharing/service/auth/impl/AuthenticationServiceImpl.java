@@ -1,8 +1,9 @@
-package com.kobylchak.carsharing.service.auth;
+package com.kobylchak.carsharing.service.auth.impl;
 
 import com.kobylchak.carsharing.dto.user.UserLoginRequestDto;
 import com.kobylchak.carsharing.dto.user.UserLoginResponseDto;
 import com.kobylchak.carsharing.security.JwtUtil;
+import com.kobylchak.carsharing.service.auth.AuthenticationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
