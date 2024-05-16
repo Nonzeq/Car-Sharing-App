@@ -2,6 +2,7 @@ package com.kobylchak.carsharing.service.car.impl;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -16,8 +17,8 @@ import com.kobylchak.carsharing.model.enums.CarType;
 import com.kobylchak.carsharing.repository.car.CarRepository;
 import jakarta.persistence.EntityNotFoundException;
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Optional;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -34,8 +35,7 @@ class CarServiceImplTest {
     private CarMapper carMapper;
     
     @Test
-    @DisplayName("Verify createCar() method works")
-    public void createCar_ValidCreateCarRequestDto_ReturnsCarDto() {
+    public void createCar_ValidCreateCarRequestDto_ShouldReturnsCarDto() {
         // Given
         CreateCarRequestDto requestDto = new CreateCarRequestDto();
         requestDto.setModel("Model");
@@ -67,8 +67,7 @@ class CarServiceImplTest {
     }
     
     @Test
-    @DisplayName("Verify getCarById() method works")
-    public void getCarById_ValidCarId_ReturnsCarDto() {
+    public void getCarById_ValidCarId_ShouldReturnsCarDto() {
         Long carId = 1L;
         Car car = getDefaultCar();
         car.setId(carId);
@@ -89,8 +88,7 @@ class CarServiceImplTest {
     }
     
     @Test
-    @DisplayName("Verify getCarById() method works with non existing id")
-    public void getCarById_InvalidCarId_ShouldThrowException() {
+    public void getCarById_InvalidCarId_ShouldThrowEntityNotFoundException() {
         Long carId = 1L;
         
         when(carRepository.findById(carId)).thenReturn(Optional.empty());
@@ -107,8 +105,7 @@ class CarServiceImplTest {
     }
     
     @Test
-    @DisplayName("Verify updateCar() method works with non existing id")
-    public void updateCar_InvalidCarId_ShouldThrowException() {
+    public void updateCar_InvalidCarId_ShouldThrowEntityNotFoundException() {
         Long carId = 1L;
         
         when(carRepository.existsById(carId)).thenReturn(false);
@@ -122,6 +119,23 @@ class CarServiceImplTest {
         
         verify(carRepository, times(1)).existsById(carId);
         verifyNoMoreInteractions(carRepository);
+    }
+    
+    @Test
+    public void getAllCars_ShouldReturnListCarDtos() {
+        List<Car> cars = List.of(new Car(), new Car());
+        List<CarDto> carDtos = List.of(new CarDto(), new CarDto());
+        
+        when(carRepository.findAll()).thenReturn(cars);
+        when(carMapper.toDtos(cars)).thenReturn(carDtos);
+        
+        List<CarDto> allCars = carService.getAllCars();
+        
+        assertNotNull(allCars);
+        assertEquals(cars.size(), allCars.size());
+        verify(carRepository, times(1)).findAll();
+        verifyNoMoreInteractions(carRepository);
+        
     }
     
     private Car getDefaultCar() {

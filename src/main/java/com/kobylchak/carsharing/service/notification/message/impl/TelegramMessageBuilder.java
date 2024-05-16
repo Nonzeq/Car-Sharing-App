@@ -16,7 +16,7 @@ public class TelegramMessageBuilder implements MessageBuilder {
     }
     
     @Override
-    public ListItemBuilder listItems() {
+    public MessageBuilder.ListItemBuilder listItems() {
         return new TelegramMessageBuilder.ListItemBuilder();
     }
     
