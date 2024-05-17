@@ -46,7 +46,7 @@ public class UserServiceImpl implements UserService {
     
     @Override
     @Transactional
-    public void updateUserRole(Long userId, UpdateRoleRequestDto requestDto)
+    public UserResponseDto updateUserRole(Long userId, UpdateRoleRequestDto requestDto)
             throws RoleNotValidException {
         Role role = roleRepository.findByName(UserRole.valueOf(requestDto.getRoleName()))
                                   .orElseThrow(
@@ -55,7 +55,7 @@ public class UserServiceImpl implements UserService {
                                   .orElseThrow(
                                           () -> new EntityNotFoundException("User not found"));
         user.setRole(role);
-        userReposiotry.save(user);
+        return userMapper.toDto(userReposiotry.save(user));
     }
     
     @Override

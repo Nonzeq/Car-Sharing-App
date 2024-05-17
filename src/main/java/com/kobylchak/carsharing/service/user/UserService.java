@@ -12,7 +12,8 @@ public interface UserService {
     UserResponseDto registerUser(UserRegistrationRequestDto requestDto) throws
             UserRegistrationException;
     
-    void updateUserRole(Long userId, UpdateRoleRequestDto requestDto) throws RoleNotValidException;
+    UserResponseDto updateUserRole(Long userId, UpdateRoleRequestDto requestDto)
+            throws RoleNotValidException;
     
     UserResponseDto getUserInfo(User user);
     
