@@ -1,36 +1,30 @@
 package com.kobylchak.carsharing.service.payment.impl;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
-import com.kobylchak.carsharing.dto.car.CarDto;
-import com.kobylchak.carsharing.dto.car.CreateCarRequestDto;
 import com.kobylchak.carsharing.dto.payment.CreatePaymentRequestDto;
+import com.kobylchak.carsharing.dto.payment.PaymentCancelDto;
 import com.kobylchak.carsharing.dto.payment.PaymentDto;
+import com.kobylchak.carsharing.dto.payment.PaymentSuccessDto;
 import com.kobylchak.carsharing.exception.PaymentException;
-import com.kobylchak.carsharing.mapper.car.CarMapper;
 import com.kobylchak.carsharing.mapper.payment.PaymentMapper;
 import com.kobylchak.carsharing.model.Car;
 import com.kobylchak.carsharing.model.Payment;
 import com.kobylchak.carsharing.model.Rental;
 import com.kobylchak.carsharing.model.Role;
 import com.kobylchak.carsharing.model.User;
-import com.kobylchak.carsharing.model.enums.CarType;
 import com.kobylchak.carsharing.model.enums.PaymentStatus;
 import com.kobylchak.carsharing.model.enums.PaymentType;
 import com.kobylchak.carsharing.model.enums.UserRole;
-import com.kobylchak.carsharing.repository.car.CarRepository;
 import com.kobylchak.carsharing.repository.payment.PaymentRepository;
 import com.kobylchak.carsharing.repository.rental.RentalRepository;
+import com.kobylchak.carsharing.service.notification.NotificationService;
+import com.kobylchak.carsharing.service.notification.message.MessageBuilder;
+import com.kobylchak.carsharing.service.notification.message.impl.TelegramMessageBuilder;
 import com.kobylchak.carsharing.service.payment.CalculatorProvider;
-import com.kobylchak.carsharing.service.stripe.StripeInternalService;
 import com.kobylchak.carsharing.service.stripe.impl.StripeInternalServiceImpl;
 import com.stripe.model.checkout.Session;
 import jakarta.persistence.EntityNotFoundException;
@@ -60,6 +54,12 @@ class PaymentServiceImplTest {
     private CalculatorProvider calculatorProvider;
     @Mock
     private PaymentCalculator paymentCalculator;
+    @Mock
+    private NotificationService notificationService;
+    @Mock
+    private MessageBuilder messageBuilder;
+    @Mock
+    private MessageBuilder.ListItemBuilder listItemBuilder;
     
     @Test
     public void createPayment_ValidParameters_ShouldReturnPaymentDto() {
@@ -145,8 +145,107 @@ class PaymentServiceImplTest {
                                                                          requestDto,
                                                                          user));
         String expected = "Payment for rental id: " + requestDto.getRentalId()
-                           + " already created";
+                          + " already created";
         assertEquals(expected, paymentException.getMessage());
+    }
+    
+    @Test
+    public void successMethod_InvalidSessionId_ShouldThrowEntityNotFoundException() {
+        String sessionId = "asdasdasd";
+        
+        when(paymentRepository.findBySessionId(sessionId)).thenReturn(Optional.empty());
+        
+        EntityNotFoundException paymentException = assertThrows(EntityNotFoundException.class,
+                                                                () -> paymentService.success(
+                                                                        sessionId));
+        String expected = "Can't find Payment by session id: " + sessionId;
+        assertEquals(expected, paymentException.getMessage());
+    }
+    
+    @Test
+    public void successMethod_ValidSessionId_ShouldReturnPaymentSuccessDto() {
+        String sessionId = "validSessionId";
+        
+        Payment payment = new Payment();
+        payment.setStatus(PaymentStatus.PENDING);
+        
+        when(paymentRepository.findBySessionId(sessionId)).thenReturn(Optional.of(payment));
+        when(stripeService.checkSuccess(sessionId)).thenReturn(true);
+        when(paymentRepository.save(payment)).thenReturn(payment);
+        when(notificationService.messageBuilder()).thenReturn(new TelegramMessageBuilder());
+        PaymentSuccessDto successDto = paymentService.success(sessionId);
+        String expected = "Your payment has been completed successfully";
+        
+        assertNotNull(successDto);
+        assertEquals(expected, successDto.getMessage());
+    }
+    
+    @Test
+    public void successMethod_PaymentWasAlreadyPaid_ShouldReturnPaymentSuccessDto() {
+        String sessionId = "asdasdasd";
+        
+        Payment payment = new Payment();
+        payment.setStatus(PaymentStatus.PAID);
+        
+        when(paymentRepository.findBySessionId(sessionId)).thenReturn(Optional.of(payment));
+        when(stripeService.checkSuccess(sessionId)).thenReturn(true);
+        
+        PaymentSuccessDto successDto = paymentService.success(sessionId);
+        String expected = "Something went wrong";
+        
+        assertEquals(expected, successDto.getMessage());
+    }
+    
+    @Test
+    public void cancelMethod_InvalidSessionId_ShouldThrowEntityNotFoundException() {
+        String sessionId = "asdasdasd";
+        
+        when(paymentRepository.findBySessionId(sessionId)).thenReturn(Optional.empty());
+        
+        EntityNotFoundException entityNotFoundException = assertThrows(
+                EntityNotFoundException.class, () ->
+                                                       paymentService.cancel(sessionId));
+        String expected = "Can't find Payment by session id: " + sessionId;
+        
+        assertEquals(expected, entityNotFoundException.getMessage());
+    }
+    
+    @Test
+    public void cancelMethod_SessionHasExpired_ShouldReturnPaymentCancelDto() {
+        String sessionId = "asdasdasd";
+        String sessionUrl = "sessionUrl";
+        Session session = new Session();
+        session.setUrl(sessionUrl);
+        
+        when(paymentRepository.findBySessionId(sessionId)).thenReturn(Optional.of(new Payment()));
+        when(stripeService.getSessionById(sessionId)).thenReturn(session);
+        when(stripeService.checkCancel(sessionId)).thenReturn(false);
+        
+        PaymentCancelDto cancel = paymentService.cancel(sessionId);
+        String expectedMessage = "Your session has expired";
+        
+        assertEquals(expectedMessage, cancel.getMessage());
+        assertEquals(sessionUrl, cancel.getSessionUrl());
+    }
+    
+    @Test
+    public void cancelMethod_ValidSessionNotExpired_ShouldReturnPaymentCancelDto() {
+        String sessionId = "asdasdasd";
+        String sessionUrl = "sessionUrl";
+        Session session = new Session();
+        session.setUrl(sessionUrl);
+        
+        when(paymentRepository.findBySessionId(sessionId)).thenReturn(Optional.of(new Payment()));
+        when(stripeService.getSessionById(sessionId)).thenReturn(session);
+        when(stripeService.checkCancel(sessionId)).thenReturn(true);
+        
+        PaymentCancelDto cancel = paymentService.cancel(sessionId);
+        String expectedMessage = "Payment can be made later "
+                                 + "the session is available "
+                                 + " 24 hours";
+        
+        assertEquals(expectedMessage, cancel.getMessage());
+        assertEquals(sessionUrl, cancel.getSessionUrl());
     }
     
     @Test
@@ -166,9 +265,9 @@ class PaymentServiceImplTest {
                 .thenReturn(Optional.empty());
         
         EntityNotFoundException paymentException = assertThrows(EntityNotFoundException.class,
-                                                         () -> paymentService.createPayment(
-                                                                         requestDto,
-                                                                         user));
+                                                                () -> paymentService.createPayment(
+                                                                        requestDto,
+                                                                        user));
         String expected = "Rental with id: "
                           + requestDto.getRentalId()
                           + " not found or not "

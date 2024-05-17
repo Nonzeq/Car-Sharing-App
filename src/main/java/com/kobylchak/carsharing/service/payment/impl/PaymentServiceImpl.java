@@ -105,6 +105,7 @@ public class PaymentServiceImpl implements PaymentService {
                 () -> new EntityNotFoundException("Can't find Payment by session id: "
                                                   + sessionId));
         Session session = stripeService.getSessionById(sessionId);
+        
         if (stripeService.checkCancel(sessionId)) {
             PaymentCancelDto paymentCancelDto = new PaymentCancelDto();
             paymentCancelDto.setMessage("Payment can be made later "
@@ -123,7 +124,7 @@ public class PaymentServiceImpl implements PaymentService {
                        .item("ID: " + payment.getId())
                        .item("Status: " + payment.getStatus())
                        .item("Type: " + payment.getType())
-                       .item("Amount was paid" + payment.getAmountToPay())
+                       .item("Amount was paid: " + payment.getAmountToPay())
                        .buildItemsList()
                        .build();
     }
