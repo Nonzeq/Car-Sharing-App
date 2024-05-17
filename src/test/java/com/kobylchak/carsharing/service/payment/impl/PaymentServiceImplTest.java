@@ -63,9 +63,9 @@ class PaymentServiceImplTest {
     
     @Test
     public void createPayment_ValidParameters_ShouldReturnPaymentDto() {
-        Long rentalId = 1L;
-        String sessionId = "sessionId";
-        String sessionUrl = "https://session.url.com/";
+        final Long rentalId = 1L;
+        final String sessionId = "sessionId";
+        final String sessionUrl = "https://session.url.com/";
         
         User user = new User();
         user.setId(1L);
@@ -99,17 +99,18 @@ class PaymentServiceImplTest {
         session.setUrl(sessionUrl);
         
         when(paymentRepository.findByRentalIdAndType(requestDto.getRentalId(),
-                                                     requestDto.getPaymentType()))
-                .thenReturn(Optional.empty());
-        when(rentalRepository.findByIdAndActualReturnDateIsExist(requestDto.getRentalId()))
-                .thenReturn(Optional.of(rental));
-        when(calculatorProvider.getCalculator(requestDto.getPaymentType()))
-                .thenReturn(paymentCalculator);
+                                                     requestDto.getPaymentType())).thenReturn(
+                Optional.empty());
+        when(rentalRepository.findByIdAndActualReturnDateIsExist(
+                requestDto.getRentalId())).thenReturn(Optional.of(rental));
+        when(calculatorProvider.getCalculator(requestDto.getPaymentType())).thenReturn(
+                paymentCalculator);
         when(paymentCalculator.calculate(rental)).thenReturn(BigDecimal.valueOf(90));
-        when(paymentMapper.fromRentalToPayment(rental,
-                                               requestDto.getPaymentType()
-                , PaymentStatus.PENDING,
-                                               BigDecimal.valueOf(90)))
+        when(paymentMapper.fromRentalToPayment(
+                rental,
+                requestDto.getPaymentType(),
+                PaymentStatus.PENDING,
+                BigDecimal.valueOf(90)))
                 .thenReturn(payment);
         
         when(stripeService.createSession(user, payment)).thenReturn(session);
@@ -136,16 +137,13 @@ class PaymentServiceImplTest {
         user.setEmail("user@example.com");
         
         when(paymentRepository.findByRentalIdAndType(requestDto.getRentalId(),
-                                                     requestDto.getPaymentType()))
-                .thenReturn(Optional.of(new Payment()));
+                                                     requestDto.getPaymentType())).thenReturn(
+                Optional.of(new Payment()));
         
         PaymentException paymentException = assertThrows(PaymentException.class,
-                                                         () ->
-                                                                 paymentService.createPayment(
-                                                                         requestDto,
-                                                                         user));
-        String expected = "Payment for rental id: " + requestDto.getRentalId()
-                          + " already created";
+                                                         () -> paymentService.createPayment(
+                                                                 requestDto, user));
+        String expected = "Payment for rental id: " + requestDto.getRentalId() + " already created";
         assertEquals(expected, paymentException.getMessage());
     }
     
@@ -203,8 +201,7 @@ class PaymentServiceImplTest {
         when(paymentRepository.findBySessionId(sessionId)).thenReturn(Optional.empty());
         
         EntityNotFoundException entityNotFoundException = assertThrows(
-                EntityNotFoundException.class, () ->
-                                                       paymentService.cancel(sessionId));
+                EntityNotFoundException.class, () -> paymentService.cancel(sessionId));
         String expected = "Can't find Payment by session id: " + sessionId;
         
         assertEquals(expected, entityNotFoundException.getMessage());
@@ -240,9 +237,8 @@ class PaymentServiceImplTest {
         when(stripeService.checkCancel(sessionId)).thenReturn(true);
         
         PaymentCancelDto cancel = paymentService.cancel(sessionId);
-        String expectedMessage = "Payment can be made later "
-                                 + "the session is available "
-                                 + " 24 hours";
+        String expectedMessage = "Payment can be made later " + "the session is available " + " "
+                                 + "24 hours";
         
         assertEquals(expectedMessage, cancel.getMessage());
         assertEquals(sessionUrl, cancel.getSessionUrl());
@@ -261,24 +257,21 @@ class PaymentServiceImplTest {
         user.setLastName("last");
         user.setEmail("user@example.com");
         
-        when(rentalRepository.findByIdAndActualReturnDateIsExist(requestDto.getRentalId()))
-                .thenReturn(Optional.empty());
+        when(rentalRepository.findByIdAndActualReturnDateIsExist(
+                requestDto.getRentalId())).thenReturn(Optional.empty());
         
         EntityNotFoundException paymentException = assertThrows(EntityNotFoundException.class,
                                                                 () -> paymentService.createPayment(
-                                                                        requestDto,
-                                                                        user));
-        String expected = "Rental with id: "
-                          + requestDto.getRentalId()
-                          + " not found or not "
+                                                                        requestDto, user));
+        String expected = "Rental with id: " + requestDto.getRentalId() + " not found or not "
                           + "returned";
         assertEquals(expected, paymentException.getMessage());
     }
     
     @Test
     public void getPayments_InvalidIdOrRentalNotReturned_ShouldThrowEntityNotFoundException() {
-        Long rentalId = 1L;
-        Long userId = 1L;
+        final Long rentalId = 1L;
+        final Long userId = 1L;
         CreatePaymentRequestDto requestDto = new CreatePaymentRequestDto();
         requestDto.setPaymentType(PaymentType.PAYMENT);
         requestDto.setRentalId(rentalId);
