@@ -4,6 +4,7 @@ import com.kobylchak.carsharing.exception.NotificationExcetion;
 import com.kobylchak.carsharing.exception.PaymentException;
 import com.kobylchak.carsharing.exception.RentalProcessingException;
 import com.kobylchak.carsharing.exception.UserRegistrationException;
+import jakarta.persistence.EntityNotFoundException;
 import java.time.LocalDateTime;
 import java.util.List;
 import org.springframework.http.HttpHeaders;
@@ -20,6 +21,15 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 @ControllerAdvice
 public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler {
+    @ExceptionHandler({EntityNotFoundException.class})
+    public ResponseEntity<Object> handleEntityNotFoundException(EntityNotFoundException exception) {
+        ExceptionResponseData data = new ExceptionResponseData();
+        data.setTimestamp(LocalDateTime.now());
+        data.setHttpStatus(HttpStatus.BAD_REQUEST);
+        data.setErrorData(List.of(new ErrorData(exception.getMessage())));
+        return new ResponseEntity<>(data, HttpStatus.BAD_REQUEST);
+    }
+    
     @ExceptionHandler({PaymentException.class})
     public ResponseEntity<Object> handlePaymentException(PaymentException exception) {
         ExceptionResponseData data = new ExceptionResponseData();
