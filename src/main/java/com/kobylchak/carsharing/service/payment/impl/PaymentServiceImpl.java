@@ -79,7 +79,7 @@ public class PaymentServiceImpl implements PaymentService {
         List<Long> list = rentals.stream()
                                   .map(Rental::getId)
                                   .toList();
-        return paymentMapper.toDtos(paymentRepository.findAllById(list));
+        return paymentMapper.toDtos(paymentRepository.findAllByRentalId(list));
     }
     
     @Override

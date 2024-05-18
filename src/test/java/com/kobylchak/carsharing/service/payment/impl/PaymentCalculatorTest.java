@@ -17,7 +17,7 @@ class PaymentCalculatorTest {
     private PaymentCalculator paymentCalculator;
     
     @Test
-    public void calculate_ValidParamters_ShouldReturnBigDecimal() {
+    public void calculate_ValidParameters_ShouldReturnBigDecimal() {
         final BigDecimal dayleFee = BigDecimal.valueOf(40);
         final int daysOfRent = 10;
         Car car = new Car();

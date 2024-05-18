@@ -296,7 +296,7 @@ class PaymentServiceImplTest {
         List<PaymentDto> paymentsDtos = List.of(new PaymentDto());
         
         when(rentalRepository.findAllByUserId(userId)).thenReturn(rentals);
-        when(paymentRepository.findAllById(rentalIds)).thenReturn(payments);
+        when(paymentRepository.findAllByRentalId(rentalIds)).thenReturn(payments);
         when(paymentMapper.toDtos(payments)).thenReturn(paymentsDtos);
         
         List<PaymentDto> actual = paymentService.getPayments(userId, user);
