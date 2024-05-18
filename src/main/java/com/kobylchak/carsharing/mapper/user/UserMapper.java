@@ -29,6 +29,7 @@ public interface UserMapper {
         user.setRole(defaultRole);
     }
     
+    @Mapping(target = "role", source = "role.name")
     UserResponseDto toDto(User user);
     
 }

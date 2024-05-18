@@ -1,10 +1,11 @@
-package com.kobylchak.carsharing.service.car;
+package com.kobylchak.carsharing.service.car.impl;
 
 import com.kobylchak.carsharing.dto.car.CarDto;
 import com.kobylchak.carsharing.dto.car.CreateCarRequestDto;
 import com.kobylchak.carsharing.mapper.car.CarMapper;
 import com.kobylchak.carsharing.model.Car;
 import com.kobylchak.carsharing.repository.car.CarRepository;
+import com.kobylchak.carsharing.service.car.CarService;
 import jakarta.persistence.EntityNotFoundException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;

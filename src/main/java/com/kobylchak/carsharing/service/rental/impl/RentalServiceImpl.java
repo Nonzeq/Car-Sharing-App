@@ -83,7 +83,9 @@ public class RentalServiceImpl implements RentalService {
             rental.setActualReturnDate(LocalDate.now());
             rental.setActive(false);
             Car car = carRepository.findById(rental.getCar().getId()).orElseThrow(
-                    () -> new RentalProcessingException("Car with id: " + id + " not " + "found"));
+                    () -> new RentalProcessingException("Car with id: "
+                                                        + id
+                                                        + " not found"));
             car.setInventory(car.getInventory() + 1);
             carRepository.save(car);
             return rentalMapper.toDto(rentalRepository.save(rental));

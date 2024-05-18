@@ -10,6 +10,7 @@ import lombok.Data;
 public class PaymentDto {
     private Long id;
     private URL sessionUrl;
+    private String sessionId;
     private PaymentStatus status;
     private PaymentType type;
     private BigDecimal amountToPay;

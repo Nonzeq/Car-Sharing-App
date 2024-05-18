@@ -10,18 +10,18 @@ import com.kobylchak.carsharing.model.Payment;
 import com.kobylchak.carsharing.model.Rental;
 import com.kobylchak.carsharing.model.User;
 import com.kobylchak.carsharing.model.enums.PaymentStatus;
-import com.kobylchak.carsharing.model.enums.PaymentType;
 import com.kobylchak.carsharing.model.enums.UserRole;
 import com.kobylchak.carsharing.repository.payment.PaymentRepository;
 import com.kobylchak.carsharing.repository.rental.RentalRepository;
 import com.kobylchak.carsharing.service.notification.NotificationService;
+import com.kobylchak.carsharing.service.payment.AmountToPayCalculator;
+import com.kobylchak.carsharing.service.payment.CalculatorProvider;
 import com.kobylchak.carsharing.service.payment.PaymentService;
 import com.kobylchak.carsharing.service.stripe.StripeInternalService;
 import com.stripe.model.checkout.Session;
 import jakarta.persistence.EntityNotFoundException;
 import java.math.BigDecimal;
 import java.net.URL;
-import java.time.temporal.ChronoUnit;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -32,12 +32,12 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 @RequiredArgsConstructor
 public class PaymentServiceImpl implements PaymentService {
-    private static final BigDecimal FINE_MULTIPLIER = BigDecimal.valueOf(1.4);
     private final PaymentRepository paymentRepository;
     private final PaymentMapper paymentMapper;
     private final StripeInternalService stripeService;
     private final RentalRepository rentalRepository;
     private final NotificationService notificationService;
+    private final CalculatorProvider calculatorProvider;
     
     @Override
     @SneakyThrows
@@ -55,7 +55,15 @@ public class PaymentServiceImpl implements PaymentService {
                                                                           + requestDto.getRentalId()
                                                                           + " not found or not "
                                                                           + "returned"));
-        Payment payment = createPaymentBeforeSession(rental, requestDto.getPaymentType());
+        AmountToPayCalculator calculator = calculatorProvider
+                                                   .getCalculator(requestDto.getPaymentType());
+        BigDecimal amountToPay = calculator.calculate(rental);
+        Payment payment = paymentMapper.fromRentalToPayment(
+                rental,
+                requestDto.getPaymentType(),
+                PaymentStatus.PENDING,
+                amountToPay);
+        
         Session session = stripeService.createSession(user, payment);
         payment.setSessionUrl(new URL(session.getUrl()));
         payment.setSessionId(session.getId());
@@ -71,7 +79,7 @@ public class PaymentServiceImpl implements PaymentService {
         List<Long> list = rentals.stream()
                                   .map(Rental::getId)
                                   .toList();
-        return paymentMapper.toDtos(paymentRepository.findAllById(list));
+        return paymentMapper.toDtos(paymentRepository.findAllByRentalId(list));
     }
     
     @Override
@@ -97,6 +105,7 @@ public class PaymentServiceImpl implements PaymentService {
                 () -> new EntityNotFoundException("Can't find Payment by session id: "
                                                   + sessionId));
         Session session = stripeService.getSessionById(sessionId);
+        
         if (stripeService.checkCancel(sessionId)) {
             PaymentCancelDto paymentCancelDto = new PaymentCancelDto();
             paymentCancelDto.setMessage("Payment can be made later "
@@ -115,29 +124,8 @@ public class PaymentServiceImpl implements PaymentService {
                        .item("ID: " + payment.getId())
                        .item("Status: " + payment.getStatus())
                        .item("Type: " + payment.getType())
-                       .item("Amount was paid" + payment.getAmountToPay())
+                       .item("Amount was paid: " + payment.getAmountToPay())
                        .buildItemsList()
                        .build();
-    }
-    
-    private Payment createPaymentBeforeSession(Rental rental, PaymentType paymentType) {
-        Payment payment = new Payment();
-        payment.setType(paymentType);
-        payment.setRental(rental);
-        payment.setAmountToPay(calculateAmountToPay(rental, paymentType));
-        payment.setStatus(PaymentStatus.PENDING);
-        return payment;
-    }
-    
-    private BigDecimal calculateAmountToPay(Rental rental, PaymentType paymentType) {
-        BigDecimal fee = rental.getCar().getDailyFee();
-        if (paymentType.equals(PaymentType.PAYMENT)) {
-            long daysOfUse = ChronoUnit.DAYS.between(rental.getRentalDate(),
-                                                     rental.getActualReturnDate());
-            return fee.multiply(BigDecimal.valueOf(daysOfUse));
-        }
-        long daysOfOverdue = ChronoUnit.DAYS.between(rental.getReturnDate(),
-                                                     rental.getActualReturnDate());
-        return fee.multiply(BigDecimal.valueOf(daysOfOverdue)).multiply(FINE_MULTIPLIER);
     }
 }
