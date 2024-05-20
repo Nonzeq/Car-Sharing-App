@@ -426,13 +426,6 @@
 
 * Endpoint ```/api/rentals/?user_id=&is_active=```
 * HTTP Request: GET
-* Request Body:
-  ```
-  {
-    "user_id": "string",
-    "is_active": "string"
-  }
-  ```
 * Response Status Code 200
 * Response Body:
   ```
