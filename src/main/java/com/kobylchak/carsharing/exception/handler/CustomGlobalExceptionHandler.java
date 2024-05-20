@@ -11,6 +11,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -21,6 +22,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 @ControllerAdvice
 public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler {
+    
     @ExceptionHandler({EntityNotFoundException.class})
     public ResponseEntity<Object> handleEntityNotFoundException(EntityNotFoundException exception) {
         ExceptionResponseData data = new ExceptionResponseData();
@@ -63,6 +65,19 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
         data.setTimestamp(LocalDateTime.now());
         data.setHttpStatus(HttpStatus.BAD_REQUEST);
         data.setErrorData(List.of(new ErrorData(exception.getMessage())));
+        return new ResponseEntity<>(data, HttpStatus.BAD_REQUEST);
+    }
+    
+    @Override
+    protected ResponseEntity<Object> handleHttpMessageNotReadable(
+            HttpMessageNotReadableException ex,
+            HttpHeaders headers,
+            HttpStatusCode status,
+            WebRequest request) {
+        ExceptionResponseData data = new ExceptionResponseData();
+        data.setTimestamp(LocalDateTime.now());
+        data.setHttpStatus(HttpStatus.BAD_REQUEST);
+        data.setErrorData(List.of(new ErrorData(ex.getMessage())));
         return new ResponseEntity<>(data, HttpStatus.BAD_REQUEST);
     }
     
