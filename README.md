@@ -461,10 +461,9 @@
 1) Install Docker
 2) Clone current project repository
 3) Add your ".env" file (see .env.example)
-4) Configure a ".env" file with necessary environment variables
-5) Configure telegram notifications, paste your own {BOT_TOKEN} and {CHAT_ID}
-6) Paste your own {STRIPE_API_KEY} 
-7) Run the command ```mvn clean package```
-8) Use ```docker-compose up``` to run Docker container
-9) User swagger for testing http://localhost:{SPRING_LOCAL_PORT}/api/swagger
-10) Use default link to [Swagger](http://localhost:8081/api/swagger) 
+4) Configure a ".env" file with necessary environment variables 
+5) Paste your own {BOT_TOKEN}, {CHAT_ID} and {STRIPE_API_KEY} in .env
+6) Run the command ```mvn clean package```
+7) Run ```docker-compose up``` to run Docker container
+8) Use swagger for testing http://localhost:{SPRING_LOCAL_PORT}/api/swagger
+9) Use default link to [Swagger](http://localhost:8081/api/swagger) 
