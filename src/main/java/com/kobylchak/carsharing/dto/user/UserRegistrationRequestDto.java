@@ -1,6 +1,6 @@
 package com.kobylchak.carsharing.dto.user;
 
-import com.kobylchak.carsharing.validation.user.FieldMatch;
+import com.kobylchak.carsharing.validation.annotation.FieldMatch;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;

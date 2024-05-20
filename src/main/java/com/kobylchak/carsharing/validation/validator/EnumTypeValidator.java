@@ -1,5 +1,6 @@
-package com.kobylchak.carsharing.validation.car;
+package com.kobylchak.carsharing.validation.validator;
 
+import com.kobylchak.carsharing.validation.annotation.EnumType;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 

@@ -1,7 +1,7 @@
 package com.kobylchak.carsharing.dto.car;
 
 import com.kobylchak.carsharing.model.enums.CarType;
-import com.kobylchak.carsharing.validation.car.EnumType;
+import com.kobylchak.carsharing.validation.annotation.EnumType;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;

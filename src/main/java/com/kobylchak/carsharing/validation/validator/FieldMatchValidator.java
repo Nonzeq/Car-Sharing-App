@@ -1,5 +1,6 @@
-package com.kobylchak.carsharing.validation.user;
+package com.kobylchak.carsharing.validation.validator;
 
+import com.kobylchak.carsharing.validation.annotation.FieldMatch;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import java.util.Objects;
