@@ -48,7 +48,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public UserResponseDto updateUserRole(Long userId, UpdateRoleRequestDto requestDto)
             throws RoleNotValidException {
-        Role role = roleRepository.findByName(UserRole.valueOf(requestDto.getRoleName()))
+        Role role = roleRepository.findByName(requestDto.getRoleName())
                                   .orElseThrow(
                                           () -> new RoleNotValidException("Role is not valid"));
         User user = userReposiotry.findById(userId)

@@ -115,7 +115,7 @@ class UserServiceImplTest {
     @Test
     public void updateUserRole_ValidParameters_ShouldReturnUpdatedUserDto() {
         final Long userId = 1L;
-        final String roleName = "MANAGER";
+        final UserRole roleName = UserRole.MANAGER;
         final Role roleManager = new Role();
         final Role roleCustomer = new Role();
         final User user = getUser();
@@ -127,7 +127,7 @@ class UserServiceImplTest {
         UserResponseDto userResponseDto = new UserResponseDto();
         userResponseDto.setRole(roleManager.getName().name());
         
-        when(roleRepository.findByName(UserRole.valueOf(roleName))).thenReturn(
+        when(roleRepository.findByName(roleName)).thenReturn(
                 Optional.of(roleManager));
         when(userReposiotry.findById(userId)).thenReturn(Optional.of(user));
         when(userReposiotry.save(user)).thenReturn(user);
@@ -140,7 +140,7 @@ class UserServiceImplTest {
     @Test
     public void updateUserRole_InvalidUserId_ShouldThrowEntityNotFoundException() {
         final Long userId = 1L;
-        final String roleName = "MANAGER";
+        final UserRole roleName = UserRole.MANAGER;
         final Role roleManager = new Role();
         final Role roleCustomer = new Role();
         final User user = getUser();
@@ -150,7 +150,7 @@ class UserServiceImplTest {
         UpdateRoleRequestDto updateRoleRequestDto = new UpdateRoleRequestDto();
         updateRoleRequestDto.setRoleName(roleName);
         
-        when(roleRepository.findByName(UserRole.valueOf(roleName)))
+        when(roleRepository.findByName(roleName))
                 .thenReturn(Optional.of(new Role()));
         
         EntityNotFoundException roleNotValidException = assertThrows(
@@ -166,7 +166,7 @@ class UserServiceImplTest {
     @Test
     public void updateUserRole_InvalidRole_ShouldThrowRoleNotValidException() {
         final Long userId = 1L;
-        final String roleName = "MANAGER";
+        final UserRole roleName = UserRole.MANAGER;
         final Role roleManager = new Role();
         final Role roleCustomer = new Role();
         final User user = getUser();
@@ -176,7 +176,7 @@ class UserServiceImplTest {
         UpdateRoleRequestDto updateRoleRequestDto = new UpdateRoleRequestDto();
         updateRoleRequestDto.setRoleName(roleName);
         
-        when(roleRepository.findByName(UserRole.valueOf(roleName)))
+        when(roleRepository.findByName(roleName))
                 .thenReturn(Optional.empty());
         
         RoleNotValidException roleNotValidException = assertThrows(

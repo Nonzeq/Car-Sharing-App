@@ -16,7 +16,7 @@ public class CreateCarRequestDto {
     private String brand;
     @NotBlank
     @EnumType(type = CarType.class)
-    private String type;
+    private CarType type;
     @PositiveOrZero
     private int inventory;
     @Positive

@@ -40,14 +40,14 @@ class CarServiceImplTest {
         CreateCarRequestDto requestDto = new CreateCarRequestDto();
         requestDto.setModel("Model");
         requestDto.setBrand("Brand");
-        requestDto.setType(CarType.SEDAN.name());
+        requestDto.setType(CarType.SEDAN);
         requestDto.setInventory(5);
         requestDto.setDailyFee(BigDecimal.valueOf(40));
         
         Car car = new Car();
         car.setModel(requestDto.getModel());
         car.setBrand(requestDto.getBrand());
-        car.setType(CarType.valueOf(requestDto.getType()));
+        car.setType(requestDto.getType());
         car.setInventory(requestDto.getInventory());
         car.setDailyFee(requestDto.getDailyFee());
         

@@ -9,5 +9,5 @@ import lombok.Data;
 public class UpdateRoleRequestDto {
     @NotBlank
     @EnumType(type = UserRole.class)
-    private String roleName;
+    private UserRole roleName;
 }
