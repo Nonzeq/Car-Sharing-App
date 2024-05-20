@@ -6,6 +6,7 @@ import com.kobylchak.carsharing.dto.user.UserResponseDto;
 import com.kobylchak.carsharing.model.User;
 import com.kobylchak.carsharing.service.user.UserService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/users")
 @RequiredArgsConstructor
+@SecurityRequirement(name = "Bearer Authentication")
 @Tag(
         name = "Users management",
         description = "Endpoints for users management"
