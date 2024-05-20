@@ -424,7 +424,7 @@
 <details>
   <summary>Search rentals</summary>
 
-* Endpoint ```/api/payments/cancel```
+* Endpoint ```/api/rentals/?user_id=&is_active=```
 * HTTP Request: GET
 * Request Body:
   ```
