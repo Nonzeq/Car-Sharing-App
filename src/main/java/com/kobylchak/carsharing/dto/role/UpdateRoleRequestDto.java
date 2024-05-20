@@ -2,7 +2,6 @@ package com.kobylchak.carsharing.dto.role;
 
 import com.kobylchak.carsharing.model.enums.UserRole;
 import com.kobylchak.carsharing.validation.annotation.EnumType;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
