@@ -462,7 +462,7 @@
 2) Clone current project repository
 3) Add your ".env" file (see .env.example)
 4) Configure a ".env" file with necessary environment variables
-5) Configure telegram notifications, paste your own {BOT_TOKEN} and {CHAR_ID}
+5) Configure telegram notifications, paste your own {BOT_TOKEN} and {CHAT_ID}
 6) Paste your own {STRIPE_API_KEY} 
 7) Run the command ```mvn clean package```
 8) Use ```docker-compose up``` to run Docker container
