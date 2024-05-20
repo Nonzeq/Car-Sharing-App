@@ -21,6 +21,20 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableMethodSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
+    private static final String[] AUTH_WHITELIST = {
+            "api/v3/api-docs/**",
+            "api/swagger-ui/**",
+            "api/swagger-ui.html",
+            "api/swagger/**",
+            "api/auth/**",
+            "error",
+            "api/cars",
+            "swagger-ui.html",
+            "v3/api-docs/**",
+            "swagger-ui/**",
+            "webjars/swagger-ui/**"
+            // other public endpoints of your API may be appended to this array
+    };
     private final UserDetailsService userDetailsService;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     
@@ -36,8 +50,7 @@ public class SecurityConfig {
                        .csrf(AbstractHttpConfigurer::disable)
                        .authorizeHttpRequests(
                                auth -> auth
-                                               .requestMatchers("api/auth/**", "/error",
-                                                                "api/cars")
+                                               .requestMatchers(AUTH_WHITELIST)
                                                .permitAll()
                                                .anyRequest()
                                                .authenticated()

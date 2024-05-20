@@ -4,6 +4,7 @@ import com.kobylchak.carsharing.dto.car.CarDto;
 import com.kobylchak.carsharing.dto.car.CreateCarRequestDto;
 import com.kobylchak.carsharing.service.car.CarService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.util.List;
@@ -39,6 +40,7 @@ public class CarController {
     
     @PostMapping
     @PreAuthorize("hasRole('MANAGER')")
+    @SecurityRequirement(name = "Bearer Authentication")
     @ResponseStatus(HttpStatus.CREATED)
     @Operation(summary = "Create a new car")
     public CarDto createCar(@RequestBody @Valid CreateCarRequestDto requestDto) {
@@ -47,6 +49,7 @@ public class CarController {
     
     @GetMapping("/{id}")
     @PreAuthorize("hasAnyRole('MANAGER', 'CUSTOMER')")
+    @SecurityRequirement(name = "Bearer Authentication")
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Get car by id")
     public CarDto getCar(@PathVariable Long id) {
@@ -55,6 +58,7 @@ public class CarController {
     
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('MANAGER')")
+    @SecurityRequirement(name = "Bearer Authentication")
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Update all car fields by id")
     public CarDto updateCar(@PathVariable Long id,
@@ -64,6 +68,7 @@ public class CarController {
     
     @DeleteMapping("{id}")
     @PreAuthorize("hasRole('MANAGER')")
+    @SecurityRequirement(name = "Bearer Authentication")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @Operation(summary = "Delete car by id")
     public void deleteCar(@PathVariable Long id) {

@@ -7,6 +7,7 @@ import com.kobylchak.carsharing.dto.payment.PaymentSuccessDto;
 import com.kobylchak.carsharing.model.User;
 import com.kobylchak.carsharing.service.payment.PaymentService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("api/payments")
 @RequiredArgsConstructor
+@SecurityRequirement(name = "Bearer Authentication")
 @Tag(
         name = "Payments management",
         description = "Endpoints for payments management"

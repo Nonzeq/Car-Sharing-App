@@ -6,6 +6,7 @@ import com.kobylchak.carsharing.dto.rental.RentalSearchParameters;
 import com.kobylchak.carsharing.model.User;
 import com.kobylchak.carsharing.service.rental.RentalService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.util.List;
@@ -24,6 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("api/rentals")
 @RequiredArgsConstructor
+@SecurityRequirement(name = "Bearer Authentication")
 @Tag(
         name = "Rentals management",
         description = "Endpoints for rentals management"
