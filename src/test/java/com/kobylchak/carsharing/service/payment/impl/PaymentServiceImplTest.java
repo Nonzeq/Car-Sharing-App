@@ -21,7 +21,6 @@ import com.kobylchak.carsharing.model.enums.PaymentType;
 import com.kobylchak.carsharing.model.enums.UserRole;
 import com.kobylchak.carsharing.repository.payment.PaymentRepository;
 import com.kobylchak.carsharing.repository.rental.RentalRepository;
-import com.kobylchak.carsharing.service.notification.NotificationService;
 import com.kobylchak.carsharing.service.notification.impl.TelegramNotificationService;
 import com.kobylchak.carsharing.service.payment.CalculatorProvider;
 import com.kobylchak.carsharing.service.stripe.impl.StripeInternalServiceImpl;
@@ -54,7 +53,7 @@ class PaymentServiceImplTest {
     @Mock
     private PaymentCalculator paymentCalculator;
     @Mock
-    private NotificationService notificationService;
+    private TelegramNotificationService notificationService;
     
     @Test
     public void createPayment_ValidParameters_ShouldReturnPaymentDto() {
@@ -165,8 +164,9 @@ class PaymentServiceImplTest {
         when(paymentRepository.findBySessionId(sessionId)).thenReturn(Optional.of(payment));
         when(stripeService.checkSuccess(sessionId)).thenReturn(true);
         when(paymentRepository.save(payment)).thenReturn(payment);
+        
         when(notificationService.messageBuilder())
-                .thenReturn(new TelegramNotificationService.Builder());
+                .thenCallRealMethod();
         PaymentSuccessDto successDto = paymentService.success(sessionId);
         String expected = "Your payment has been completed successfully";
         

@@ -23,7 +23,6 @@ import com.kobylchak.carsharing.model.enums.UserRole;
 import com.kobylchak.carsharing.repository.car.CarRepository;
 import com.kobylchak.carsharing.repository.rental.RentalRepository;
 import com.kobylchak.carsharing.repository.rental.RentalSpecificationBuilder;
-import com.kobylchak.carsharing.service.notification.NotificationService;
 import com.kobylchak.carsharing.service.notification.impl.TelegramNotificationService;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -49,7 +48,7 @@ class RentalServiceImplTest {
     @Mock
     private CarRepository carRepository;
     @Mock
-    private NotificationService telegramNotificationService;
+    private TelegramNotificationService telegramNotificationService;
     @Mock
     private Specification<Rental> specification;
     
@@ -75,7 +74,7 @@ class RentalServiceImplTest {
         when(carRepository.save(car)).thenReturn(car);
         when(rentalRepository.save(rental)).thenReturn(rental);
         when(telegramNotificationService.messageBuilder())
-                .thenReturn(new TelegramNotificationService.Builder());
+                .thenCallRealMethod();
         when(rentalMapper.toDto(rental)).thenReturn(rentalDto);
         
         RentalDto actual = rentalService.createRental(createRentalRequestDto, user);

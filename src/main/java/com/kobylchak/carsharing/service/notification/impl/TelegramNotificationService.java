@@ -38,7 +38,7 @@ public class TelegramNotificationService implements NotificationService {
         return new Builder();
     }
     
-    public static class Builder implements MessageBuilder {
+    private static class Builder implements MessageBuilder {
         private final StringBuilder sb = new StringBuilder();
         
         @Override
