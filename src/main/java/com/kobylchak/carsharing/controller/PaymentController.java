@@ -9,6 +9,7 @@ import com.kobylchak.carsharing.service.payment.PaymentService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -48,7 +49,7 @@ public class PaymentController {
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasRole('CUSTOMER')")
     @Operation(summary = "Create a new payment")
-    public PaymentDto createPayment(@RequestBody CreatePaymentRequestDto requestDto,
+    public PaymentDto createPayment(@RequestBody @Valid CreatePaymentRequestDto requestDto,
                                                   Authentication authentication) {
         User user = (User) authentication.getPrincipal();
         return paymentService.createPayment(requestDto, user);
