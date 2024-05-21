@@ -4,7 +4,7 @@ import com.kobylchak.carsharing.dto.rental.CreateRentalRequestDto;
 import com.kobylchak.carsharing.dto.rental.RentalDto;
 import com.kobylchak.carsharing.dto.rental.RentalSearchParameters;
 import com.kobylchak.carsharing.exception.RentalProcessingException;
-import com.kobylchak.carsharing.mapper.rental.RentalMapper;
+import com.kobylchak.carsharing.mapper.RentalMapper;
 import com.kobylchak.carsharing.model.Car;
 import com.kobylchak.carsharing.model.Rental;
 import com.kobylchak.carsharing.model.User;

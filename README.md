@@ -449,7 +449,7 @@
 
 </details>
 
-##  How to run Book Store API
+##  How to run project
 
 1) Install Docker
 2) Clone current project repository

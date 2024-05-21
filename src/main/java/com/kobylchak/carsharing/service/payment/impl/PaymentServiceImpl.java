@@ -5,7 +5,7 @@ import com.kobylchak.carsharing.dto.payment.PaymentCancelDto;
 import com.kobylchak.carsharing.dto.payment.PaymentDto;
 import com.kobylchak.carsharing.dto.payment.PaymentSuccessDto;
 import com.kobylchak.carsharing.exception.PaymentException;
-import com.kobylchak.carsharing.mapper.payment.PaymentMapper;
+import com.kobylchak.carsharing.mapper.PaymentMapper;
 import com.kobylchak.carsharing.model.Payment;
 import com.kobylchak.carsharing.model.Rental;
 import com.kobylchak.carsharing.model.User;

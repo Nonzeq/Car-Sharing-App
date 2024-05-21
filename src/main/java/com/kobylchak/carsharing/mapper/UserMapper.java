@@ -1,4 +1,4 @@
-package com.kobylchak.carsharing.mapper.user;
+package com.kobylchak.carsharing.mapper;
 
 import com.kobylchak.carsharing.config.MapperConfig;
 import com.kobylchak.carsharing.dto.user.UserRegistrationRequestDto;
@@ -31,5 +31,4 @@ public interface UserMapper {
     
     @Mapping(target = "role", source = "role.name")
     UserResponseDto toDto(User user);
-    
 }

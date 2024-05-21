@@ -11,7 +11,7 @@ import static org.mockito.Mockito.when;
 
 import com.kobylchak.carsharing.dto.car.CarDto;
 import com.kobylchak.carsharing.dto.car.CreateCarRequestDto;
-import com.kobylchak.carsharing.mapper.car.CarMapper;
+import com.kobylchak.carsharing.mapper.CarMapper;
 import com.kobylchak.carsharing.model.Car;
 import com.kobylchak.carsharing.model.enums.CarType;
 import com.kobylchak.carsharing.repository.car.CarRepository;

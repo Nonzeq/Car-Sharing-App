@@ -1,4 +1,4 @@
-package com.kobylchak.carsharing.mapper.payment;
+package com.kobylchak.carsharing.mapper;
 
 import com.kobylchak.carsharing.config.MapperConfig;
 import com.kobylchak.carsharing.dto.payment.PaymentDto;

@@ -14,7 +14,7 @@ import com.kobylchak.carsharing.dto.rental.CreateRentalRequestDto;
 import com.kobylchak.carsharing.dto.rental.RentalDto;
 import com.kobylchak.carsharing.dto.rental.RentalSearchParameters;
 import com.kobylchak.carsharing.exception.RentalProcessingException;
-import com.kobylchak.carsharing.mapper.rental.RentalMapper;
+import com.kobylchak.carsharing.mapper.RentalMapper;
 import com.kobylchak.carsharing.model.Car;
 import com.kobylchak.carsharing.model.Rental;
 import com.kobylchak.carsharing.model.Role;
@@ -24,7 +24,7 @@ import com.kobylchak.carsharing.repository.car.CarRepository;
 import com.kobylchak.carsharing.repository.rental.RentalRepository;
 import com.kobylchak.carsharing.repository.rental.RentalSpecificationBuilder;
 import com.kobylchak.carsharing.service.notification.NotificationService;
-import com.kobylchak.carsharing.service.notification.message.impl.TelegramMessageBuilder;
+import com.kobylchak.carsharing.service.notification.impl.TelegramNotificationService;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
@@ -74,7 +74,8 @@ class RentalServiceImplTest {
         when(rentalMapper.toModel(createRentalRequestDto)).thenReturn(rental);
         when(carRepository.save(car)).thenReturn(car);
         when(rentalRepository.save(rental)).thenReturn(rental);
-        when(telegramNotificationService.messageBuilder()).thenReturn(new TelegramMessageBuilder());
+        when(telegramNotificationService.messageBuilder())
+                .thenReturn(new TelegramNotificationService.Builder());
         when(rentalMapper.toDto(rental)).thenReturn(rentalDto);
         
         RentalDto actual = rentalService.createRental(createRentalRequestDto, user);

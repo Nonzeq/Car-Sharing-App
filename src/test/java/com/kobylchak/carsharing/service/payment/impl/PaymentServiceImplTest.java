@@ -10,7 +10,7 @@ import com.kobylchak.carsharing.dto.payment.PaymentCancelDto;
 import com.kobylchak.carsharing.dto.payment.PaymentDto;
 import com.kobylchak.carsharing.dto.payment.PaymentSuccessDto;
 import com.kobylchak.carsharing.exception.PaymentException;
-import com.kobylchak.carsharing.mapper.payment.PaymentMapper;
+import com.kobylchak.carsharing.mapper.PaymentMapper;
 import com.kobylchak.carsharing.model.Car;
 import com.kobylchak.carsharing.model.Payment;
 import com.kobylchak.carsharing.model.Rental;
@@ -22,8 +22,7 @@ import com.kobylchak.carsharing.model.enums.UserRole;
 import com.kobylchak.carsharing.repository.payment.PaymentRepository;
 import com.kobylchak.carsharing.repository.rental.RentalRepository;
 import com.kobylchak.carsharing.service.notification.NotificationService;
-import com.kobylchak.carsharing.service.notification.message.MessageBuilder;
-import com.kobylchak.carsharing.service.notification.message.impl.TelegramMessageBuilder;
+import com.kobylchak.carsharing.service.notification.impl.TelegramNotificationService;
 import com.kobylchak.carsharing.service.payment.CalculatorProvider;
 import com.kobylchak.carsharing.service.stripe.impl.StripeInternalServiceImpl;
 import com.stripe.model.checkout.Session;
@@ -56,10 +55,6 @@ class PaymentServiceImplTest {
     private PaymentCalculator paymentCalculator;
     @Mock
     private NotificationService notificationService;
-    @Mock
-    private MessageBuilder messageBuilder;
-    @Mock
-    private MessageBuilder.ListItemBuilder listItemBuilder;
     
     @Test
     public void createPayment_ValidParameters_ShouldReturnPaymentDto() {
@@ -170,7 +165,8 @@ class PaymentServiceImplTest {
         when(paymentRepository.findBySessionId(sessionId)).thenReturn(Optional.of(payment));
         when(stripeService.checkSuccess(sessionId)).thenReturn(true);
         when(paymentRepository.save(payment)).thenReturn(payment);
-        when(notificationService.messageBuilder()).thenReturn(new TelegramMessageBuilder());
+        when(notificationService.messageBuilder())
+                .thenReturn(new TelegramNotificationService.Builder());
         PaymentSuccessDto successDto = paymentService.success(sessionId);
         String expected = "Your payment has been completed successfully";
         

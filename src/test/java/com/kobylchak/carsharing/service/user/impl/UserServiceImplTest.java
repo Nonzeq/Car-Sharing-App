@@ -10,12 +10,12 @@ import com.kobylchak.carsharing.dto.user.UserRegistrationRequestDto;
 import com.kobylchak.carsharing.dto.user.UserResponseDto;
 import com.kobylchak.carsharing.exception.RoleNotValidException;
 import com.kobylchak.carsharing.exception.UserRegistrationException;
-import com.kobylchak.carsharing.mapper.user.UserMapper;
+import com.kobylchak.carsharing.mapper.UserMapper;
 import com.kobylchak.carsharing.model.Role;
 import com.kobylchak.carsharing.model.User;
 import com.kobylchak.carsharing.model.enums.UserRole;
 import com.kobylchak.carsharing.repository.role.RoleRepository;
-import com.kobylchak.carsharing.repository.user.UserReposiotry;
+import com.kobylchak.carsharing.repository.user.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
@@ -34,7 +34,7 @@ class UserServiceImplTest {
     @Mock
     private UserMapper userMapper;
     @Mock
-    private UserReposiotry userReposiotry;
+    private UserRepository userReposiotry;
     @Mock
     private RoleRepository roleRepository;
     

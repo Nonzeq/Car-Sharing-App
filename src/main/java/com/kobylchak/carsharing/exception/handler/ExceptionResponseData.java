@@ -10,6 +10,4 @@ public class ExceptionResponseData {
     private LocalDateTime timestamp;
     private HttpStatus httpStatus;
     private List<ErrorData> errorData;
-    
-
 }

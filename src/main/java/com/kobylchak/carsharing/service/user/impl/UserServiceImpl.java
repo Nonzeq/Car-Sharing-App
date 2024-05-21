@@ -6,12 +6,12 @@ import com.kobylchak.carsharing.dto.user.UserRegistrationRequestDto;
 import com.kobylchak.carsharing.dto.user.UserResponseDto;
 import com.kobylchak.carsharing.exception.RoleNotValidException;
 import com.kobylchak.carsharing.exception.UserRegistrationException;
-import com.kobylchak.carsharing.mapper.user.UserMapper;
+import com.kobylchak.carsharing.mapper.UserMapper;
 import com.kobylchak.carsharing.model.Role;
 import com.kobylchak.carsharing.model.User;
 import com.kobylchak.carsharing.model.enums.UserRole;
 import com.kobylchak.carsharing.repository.role.RoleRepository;
-import com.kobylchak.carsharing.repository.user.UserReposiotry;
+import com.kobylchak.carsharing.repository.user.UserRepository;
 import com.kobylchak.carsharing.service.user.UserService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
     private final UserMapper userMapper;
-    private final UserReposiotry userReposiotry;
+    private final UserRepository userReposiotry;
     private final RoleRepository roleRepository;
     
     @Override

@@ -66,7 +66,7 @@ public class CarController {
         return carService.updateCar(id, requestDto);
     }
     
-    @DeleteMapping("{id}")
+    @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('MANAGER')")
     @SecurityRequirement(name = "Bearer Authentication")
     @ResponseStatus(HttpStatus.NO_CONTENT)
